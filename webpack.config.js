@@ -72,7 +72,8 @@ module.exports = (options = {}) => ({
   ],
   resolve: {
     alias: {
-      '~': resolve(__dirname, 'src')
+      '~': resolve(__dirname, 'src'),
+      'http$':resolve(__dirname,'src/util/HttpRequest.js')  //http请求相关的操作工具
     }
   },
   devServer: {
@@ -80,10 +81,10 @@ module.exports = (options = {}) => ({
     port: 8010,
     proxy: {
       '/api/': {
-        target: 'http://127.0.0.1:8888',
+        target: 'http://127.0.0.1:8080',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
+          '^/api': '/ets/api/'
         }
       }
     },
