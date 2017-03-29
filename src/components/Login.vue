@@ -22,7 +22,7 @@
                        <el-input v-model="email" class="item" placeholder="邮箱"></el-input>
                        <el-input v-model="password" type="password" class="item" placeholder="密码"></el-input>
                        <el-input v-model="repassword" type="password" class="item" placeholder="确认密码"></el-input>
-                       <el-radio-group v-model="type" size="small" class="item-radio">
+                         <el-radio-group v-model="type" size="small" class="item-radio">
                            <el-radio :label="1">学生</el-radio>
                            <el-radio :label="2">教师</el-radio>
                            <el-radio :label="3">教学管理员</el-radio>
@@ -53,35 +53,54 @@ export default{
       methods: {
         login:function(event){
             this.lg_loading = true;
-            var user = new FormData();
-            user.append('uid',this.username);
-            user.append('pw',this.password);
-            user.append('type',this.type);
+            var user = this.user;
             http.postJson('/api/user/login',user).then((value)=>{
-                http.parseResp(value).then((data)=>{
-                    this.$message(data);
+                http.parseResp(value).then((result)=>{
+                    this.$message(result.message);
                 },(err)=>{
-                    console.log(err);
-                    this.$message(err);
+                    this.$message.warning(err);
                 })
                 this.lg_loading = false;
             },(err)=>{
-                console.log(err);
+                this.$message.error(err);
                 this.lg_loading = false;
             });
         },
         register:function(event){
             this.lg_loading=true;
-            setTimeout(()=>{
-                this.lg_loading=false;
-            },3000)
+            var user = this.user;
+            http.postJson('/api/user',user).then((value)=>{
+                http.parseResp(value).then((result)=>{
+                    this.$message(result.message);
+                },(err)=>{
+                    this.$message.warning(err);
+                })
+                this.lg_loading = false;
+            },(err)=>{
+                this.$message.warning(err);
+                this.lg_loading = false;
+            }).catch((err)=>{
+                this.lg_loading = false;
+            })
         },
         handleClick:function(event){
-            this.username='';
-            this.password='';
-            this.repassword='';
-            this.email ='';
+            this.username='admin';
+            this.password='admin';
+            this.repassword='admin';
+            this.email ='286584630@qq.com';
             this.type=1;
+        }
+      },
+      computed:{
+        user:{
+            get:function(){
+                var user = new FormData();
+                user.append('uid',this.username);
+                user.append('pw',this.password);
+                user.append('type',this.type);
+                user.append('email',this.email);
+                return user;
+            }
         }
       }
 }

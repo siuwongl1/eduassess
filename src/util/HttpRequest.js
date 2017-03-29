@@ -50,10 +50,8 @@ export default {
                 var obj= JSON.parse(result);
                 var code = obj.statusCode;
                 if(code==0){
-                    console.log("data:"+obj.data);
-                    resolve(obj.data);
+                    resolve(obj); //返回Json Object
                 }else{
-                    console.log("data:"+obj.message);
                     reject(obj.message);
                 }
             }else{
