@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-        <login></login>
+        <div class="app_content">
+            <login></login>
+        </div>
   </div>
 </template>
 
@@ -18,5 +20,12 @@ export default {
     }
 }
 </script>
-
+<style>
+    .app_content {
+        position: absolute;
+        top: 20%;
+        width: 100%;
+        text-align: center;
+    }
+</style>
 
