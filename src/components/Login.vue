@@ -1,5 +1,6 @@
 <template>
-<el-card class="box-card" v-loading="lg_loading"
+<div class="app_content">
+    <el-card class="box-card" v-loading="lg_loading"
                                     element-loading-text="正在登录……">
           <el-tabs v-model="activeName" style="text-align:center" @tab-click="handleClick">
               <el-tab-pane label="登录" name="first">
@@ -32,7 +33,9 @@
                   </el-form>
               </el-tab-pane>
           </el-tabs>
-      </el-card>
+    </el-card>
+</div>
+
 </template>
 <script>
 import http from 'http'
@@ -112,7 +115,12 @@ export default{
   .text {
     font-size: 14px;
   }
-
+  .app_content {
+    position: absolute;
+    top: 20%;
+    width: 100%;
+    text-align: center;
+  }
   .item {
     padding: 10px 0;
     margin:0 auto;
@@ -142,5 +150,11 @@ export default{
     padding:10px;
     margin:0 auto;
     width: 480px;
+  }
+  .app_content {
+    position: absolute;
+    top: 20%;
+    width: 100%;
+    text-align: center;
   }
 </style>
