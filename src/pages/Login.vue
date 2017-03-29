@@ -40,6 +40,7 @@
 <script>
 import http from 'http'
 import co from 'co'
+import router  from 'vue-router'
 export default{
     data () {
         return {
@@ -53,13 +54,20 @@ export default{
           repassword:''
         }
       },
+      rules:{
+        username:[
+        {required:true,message:'请输入用户名',trigger:'blur'},
+        {min:3,max:18,message:'长度在3到18个字符',trigger:'blur'}],
+        password:[{required:true,message:'请输入密码',trigger:'blur'}]
+      },
       methods: {
         login:function(event){
             this.lg_loading = true;
             var user = this.user;
             http.postJson('/api/user/login',user).then((value)=>{
                 http.parseResp(value).then((result)=>{
-                    this.$message(result.message);
+                    //登录成功时
+                    this.$router.push('index');
                 },(err)=>{
                     this.$message.warning(err);
                 })
