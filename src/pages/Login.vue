@@ -39,7 +39,6 @@
 </template>
 <script>
 import http from 'http'
-import co from 'co'
 export default{
     data () {
         return {
@@ -59,8 +58,8 @@ export default{
             var user = this.user;
             http.postJson('/api/user/login',user).then((value)=>{
                 http.parseResp(value).then((result)=>{
-                    //登录成功时
-                    this.$router.push({ name: 'index', params: { name: this.username }});
+                    //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
+                    this.$router.push({ name: 'index', params: { name: this.username,uid:result.data,type:this.type }});
                 },(err)=>{
                     this.$message.warning(err);
                 })
@@ -76,7 +75,7 @@ export default{
             http.postJson('/api/user',user).then((value)=>{
                 http.parseResp(value).then((result)=>{
                     //注册成功,跳转主界面
-                    this.$router.push({ name: 'index', params: { name: this.username }});
+                    this.$router.push({ name: 'index', params: { name: this.username,uid:result.data,type:this.type}});
                 },(err)=>{
                     this.$message.warning(err);
                 })
