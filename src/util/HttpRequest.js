@@ -3,7 +3,6 @@
  * http请求相关，分别对应RESTful的get,post,put动作。
  */
 
-import co from 'co';
 export default {
     getJson (url) {
         var promise = new Promise((resolve, reject) => {
@@ -11,8 +10,6 @@ export default {
                 var client = new XMLHttpRequest();
                 client.open("GET", url, true);
                 client.onreadystatechange = handler;
-                client.responseType = "json";
-                client.setRequestHeader("Accept", "application/json");
                 client.send();
                 function handler() {
                     if (this.readyState !== 4) {

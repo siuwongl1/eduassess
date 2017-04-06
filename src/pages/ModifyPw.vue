@@ -11,10 +11,10 @@
             <el-form-item label="确认密码" prop="retype">
                 <el-input type="password" v-model="user.retype"></el-input>
             </el-form-item>
-            <el-form-item>
+            <div>
                 <el-button class="item-button" type="primary" @click="onSubmit('user')">确认修改</el-button>
                 <el-button class="item-button" type="primary" @click="onReset('user')">重置</el-button>
-            </el-form-item>
+            </div>
         </el-form>
     </el-card>
 </template>

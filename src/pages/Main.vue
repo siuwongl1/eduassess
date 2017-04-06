@@ -3,7 +3,8 @@
         <el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelect">
             <el-menu-item index="1">我的课堂</el-menu-item>
             <el-menu-item index="3">我的消息
-                <el-badge class="mark" :value="1"/>
+
+                <el-badge class="mark" :value="messageBadge"/>
             </el-menu-item>
 
             <el-submenu index="2">
@@ -25,14 +26,17 @@
         data() {
             return {
                 activeIndex: '1',
-                isStudent: this.$route.params.type == 1
+                isStudent: this.$route.params.type == 1,
+                messageBadge: 0
             };
         },
         methods: {
             handleSelect(key, keyPath) {
-                console.log(key);
                 if (keyPath[1] === '2-1') {  //个人信息
-
+                    this.$router.push({
+                        name: 'userInfo',
+                        params: {type: this.$route.params.type, uid: this.$route.params.uid}
+                    })
                 } else if (keyPath[1] === '2-2') { //修改密码
                     this.$router.push({
                         name: 'modifyPw',

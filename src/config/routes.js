@@ -6,6 +6,7 @@ import Login from '../pages/Login.vue'
 import Main from '../pages/Main.vue'
 import App from '../App.vue'
 import MPW from '../pages/ModifyPw.vue'
+import UserInfo from '../pages/UserInfo.vue'
 export default [{
     path: '/',
     component: App,
@@ -22,7 +23,8 @@ export default [{
             meta: { auth: false },
             component: Main,
             children:[
-                {name:'modifyPw',path:'modifyPw',component:MPW}
+                {name:'modifyPw',path:'modifyPw',component:MPW},
+                {name:'userInfo',path:'userInfo',component:UserInfo}
             ]
         },
         {
