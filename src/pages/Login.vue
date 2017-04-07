@@ -1,161 +1,244 @@
 <template>
-<div class="app_content">
-    <el-card class="box-card" v-loading="lg_loading"
-                                    element-loading-text="正在登录……">
-          <el-tabs v-model="activeName" style="text-align:center" @tab-click="handleClick">
-              <el-tab-pane label="登录" name="first">
-                  <el-form>
-                  <el-input v-model="username" class="item" placeholder="用户名或邮箱"></el-input>
-                  <el-input v-model="password" type="password" class="item" placeholder="密码" @keyup.enter="login"></el-input>
-                  <el-radio-group v-model="type" size="small" class="item-radio">
-                      <el-radio :label="1">学生</el-radio>
-                      <el-radio :label="2">教师</el-radio>
-                      <el-radio :label="3">教学管理员</el-radio>
-                      <el-radio :label="4">管理员</el-radio>
-                    </el-radio-group>
-                  <el-button id="btn_login" type="primary" class="item-btn-login" @click="login">登录</el-button>
-                                      <p class="item-p"><a class="item-p-link" href="#">无法登录？</a></p>
-                  </el-form>
-              </el-tab-pane>
-              <el-tab-pane label="注册" name="second">
-                 <el-form>
-                       <el-input v-model="username" class="item" placeholder="用户名"></el-input>
-                       <el-input v-model="email" class="item" placeholder="邮箱"></el-input>
-                       <el-input v-model="password" type="password" class="item" placeholder="密码"></el-input>
-                       <el-input v-model="repassword" type="password" class="item" placeholder="确认密码"></el-input>
-                         <el-radio-group v-model="type" size="small" class="item-radio">
-                           <el-radio :label="1">学生</el-radio>
-                           <el-radio :label="2">教师</el-radio>
-                           <el-radio :label="3">教学管理员</el-radio>
-                           <el-radio :label="4">管理员</el-radio>
-                         </el-radio-group>
-                       <el-button type="primary" class="item-btn-login" @click="register">注册</el-button>
-                  </el-form>
-              </el-tab-pane>
-          </el-tabs>
-    </el-card>
-</div>
+    <div class="app_content">
+        <el-card class="box-card" v-loading="loading"
+                 element-loading-text="正在登录……">
+            <el-tabs v-model="activeName" style="text-align:center">
+                <el-tab-pane label="登录" name="first">
+                    <el-form label-width="80px" :label-position="labelPosition" :model="loginForm" ref="loginForm"
+                             :rules="loginRules">
+                        <el-form-item label="用户名" prop="username" class="item-label">
+                            <el-input v-model="loginForm.username" class="item" placeholder="请输入您的账号或邮箱"></el-input>
+                        </el-form-item>
+                        <el-form-item label="密码" prop="password" class="item-label">
+                            <el-input v-model="loginForm.password" type="password" class="item" placeholder="请输入您的密码"
+                                      @keyup.enter="login"></el-input>
+                        </el-form-item>
+                        <el-form-item label="用户类型" prop="type" class="item-label">
+                            <el-radio-group v-model="loginForm.type" size="small" class="item-radio">
+                                <el-radio :label="1">学生</el-radio>
+                                <el-radio :label="2">教师</el-radio>
+                                <el-radio :label="3">管理员</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-button id="btn_login" type="primary" class="item-btn-login" @click="login">登录</el-button>
+                        <p class="item-p"><a class="item-p-link" href="#">无法登录？</a></p>
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="注册" name="second">
+                    <el-form label-width="80px" :label-position="labelPosition" :model="registerForm" ref="registerForm"
+                             :rules="registerRules">
+                        <el-form-item label="用户名" prop="username" class="item-label">
+                            <el-input v-model="registerForm.username" class="item" placeholder="请输入您的用户名"></el-input>
+                        </el-form-item>
+                        <el-form-item label="邮箱" prop="email" class="item-label">
+                            <el-input v-model="registerForm.email" class="item" placeholder="请输入您的邮箱"></el-input>
+                        </el-form-item>
+                        <el-form-item label="密码" prop="password" class="item-label">
+                            <el-input v-model="registerForm.password" type="password" class="item" placeholder="请输入您的密码"></el-input>
+                        </el-form-item>
+                        <el-form-item label="确认密码" prop="retype" class="item-label">
+                            <el-input v-model="registerForm.retype" type="password" class="item" placeholder="请输入确认密码"></el-input>
+                        </el-form-item>
+                        <el-form-item label="用户类型" prop="type" class="item-label">
+                            <el-radio-group v-model="registerForm.type" size="small" class="item-radio">
+                                <el-radio :label="1">学生</el-radio>
+                                <el-radio :label="2">教师</el-radio>
+                                <el-radio :label="3">管理员</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-button type="primary" class="item-btn-login" @click="register">注册</el-button>
+                    </el-form>
+                </el-tab-pane>
+            </el-tabs>
+        </el-card>
+    </div>
 
 </template>
 <script>
-import http from 'http'
-export default{
-    data () {
-        return {
-          radio: 'student',
-          activeName: 'first',
-          type:1,
-          lg_loading:false,
-          username:'',
-          password:'',
-          email:'',
-          repassword:''
-        }
-      },
-      methods: {
-        login:function(event){
-            this.lg_loading = true;
-            var user = this.user;
-            http.postJson('/api/user/login',user).then((value)=>{
-                http.parseResp(value).then((result)=>{
-                    //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
-                    this.$router.push({ name: 'index', params: { name: this.username,uid:result.data,type:this.type }});
-                },(err)=>{
-                    this.$message.warning(err);
-                })
-                this.lg_loading = false;
-            },(err)=>{
-                this.$message.error(err);
-                this.lg_loading = false;
-            });
+    import http from 'http'
+    import valid from 'valid'
+    export default{
+        data () {
+            var checkUsername = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('用户名不能为空'));
+                } else {
+                    callback();
+                }
+            }
+            var checkPassword = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('密码不能为空'));
+                } else {
+                    callback();
+                }
+            }
+            var checkRetype = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('确认密码不能为空'));
+                } else if (!value === this.registerForm.password) {
+                    callback(new Error('密码与确认密码不一致'));
+                } else {
+                    callback();
+                }
+            }
+            var checkEmail = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('邮箱不能为空'));
+                } else if (!valid.validEmail(value)) {
+                    callback(new Error('邮箱格式不正确'))
+                } else {
+                    callback();
+                }
+            }
+            return {
+                labelPosition: 'right',
+                radio: 'student',
+                activeName: 'first',
+                type: 1,
+                loading: false,
+                loginForm: {
+                    username: '',
+                    password: '',
+                    type: 1
+                },
+                registerForm: {
+                    username: '',
+                    password: '',
+                    retype: '',
+                    email: '',
+                    type: 1
+                },
+                loginRules: {
+                    username: [{validator: checkUsername, trigger: 'blur'}],
+                    password: [{validator: checkPassword, trigger: 'blur'}]
+                },
+                registerRules: {
+                    username: [{validator: checkUsername, trigger: 'blur'}],
+                    password: [{validator: checkPassword, trigger: 'blur'}],
+                    retype: [{validator: checkRetype, trigger: 'blur'}],
+                    email: [{validator: checkEmail, trigger: 'blur'}]
+                }
+            }
         },
-        register:function(event){
-            this.lg_loading=true;
-            var user = this.user;
-            http.postJson('/api/user',user).then((value)=>{
-                http.parseResp(value).then((result)=>{
-                    //注册成功,跳转主界面
-                    this.$router.push({ name: 'index', params: { name: this.username,uid:result.data,type:this.type}});
-                },(err)=>{
+        methods: {
+            login: function (formName) {
+                this.loading = true;
+                var user = this.user;
+                http.postJson('/api/user/login', user).then((value) => {
+                    http.parseResp(value).then((result) => {
+                        //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
+                        this.$router.push({
+                            name: 'index',
+                            params: {name: this.loginForm.username, uid: result.data, type: this.loginForm.type}
+                        });
+                    }, (err) => {
+                        this.$message.warning(err);
+                    })
+                    this.loading = false;
+                }, (err) => {
+                    this.$message.error(err);
+                    this.loading = false;
+                });
+            },
+            register: function (formName) {
+                this.loading = true;
+                var user = this.user;
+                http.postJson('/api/user', user).then((value) => {
+                    http.parseResp(value).then((result) => {
+                        //注册成功,跳转主界面
+                        this.$router.push({
+                            name: 'index',
+                            params: {name: this.registerForm.username, uid: result.data, type: this.registerForm.type}
+                        });
+                    }, (err) => {
+                        this.$message.warning(err);
+                    })
+                    this.loading = false;
+                }, (err) => {
                     this.$message.warning(err);
+                    this.loading = false;
+                }).catch((err) => {
+                    this.loading = false;
                 })
-                this.lg_loading = false;
-            },(err)=>{
-                this.$message.warning(err);
-                this.lg_loading = false;
-            }).catch((err)=>{
-                this.lg_loading = false;
-            })
+            }
         },
-        handleClick:function(event){
-            this.username='admin';
-            this.password='admin';
-            this.repassword='admin';
-            this.email ='286584630@qq.com';
-            this.type=1;
-        }
-      },
-      computed:{
-        user:{
-            get:function(){
-                var user = new FormData();
-                user.append('uid',this.username);
-                user.append('pw',this.password);
-                user.append('type',this.type);
-                user.append('email',this.email);
-                return user;
+        computed: {
+            user: {
+                get: function () {
+                    var user = new FormData();
+                    if (this.activeName == 'first') {  //登录表单
+                        user.append('uid', this.loginForm.username);
+                        user.append('pw', this.loginForm.password);
+                        user.append('type', this.loginForm.type);
+                    } else { //注册表单
+                        user.append('uid', this.registerForm.username);
+                        user.append('pw', this.registerForm.password);
+                        user.append('type', this.registerForm.type);
+                        user.append('email', this.registerForm.email);
+                    }
+                    return user;
+                }
             }
         }
-      }
-}
+    }
 </script>
 <style>
-  body {
-    font-family: Helvetica, sans-serif;
-  }
-  .text {
-    font-size: 14px;
-  }
-  .app_content {
-    position: absolute;
-    top: 20%;
-    width: 100%;
-    text-align: center;
-  }
-  .item {
-    padding: 10px 0;
-    margin:0 auto;
-    width:300px;
-  }
-  .item-p{
-    text-align:right;
-  }
-  .item-p-link{
-    text-decoration:none;
-    margin-right:80px;
-    font-size:14px;
-    color:#8492A6;
-  }
-  .item-p-link:hover{
-    text-decoration:underline;
-    color:#20A0FF;
-  }
-  .item-radio{
-    margin:10px  0;
-  }
-  .item-btn-login{
-    margin:10px 0;
-    width:280px;
-  }
-  .box-card {
-    padding:10px;
-    margin:0 auto;
-    width: 480px;
-  }
-  .app_content {
-    position: absolute;
-    top: 20%;
-    width: 100%;
-    text-align: center;
-  }
+    body {
+        font-family: Helvetica, sans-serif;
+    }
+    .text {
+        font-size: 14px;
+    }
+    .app_content {
+        position: absolute;
+        top: 20%;
+        width: 100%;
+        text-align: center;
+    }
+    .item {
+        margin: 0 auto;
+        width: 320px;
+    }
+
+    .item-label {
+        text-align: left;
+    }
+
+    .item-p {
+        text-align: right;
+    }
+
+    .item-p-link {
+        text-decoration: none;
+        margin-right: 80px;
+        font-size: 14px;
+        color: #8492A6;
+    }
+
+    .item-p-link:hover {
+        text-decoration: underline;
+        color: #20A0FF;
+    }
+
+    .item-radio {
+        margin: 10px 0;
+    }
+
+    .item-btn-login {
+        width: 300px;
+    }
+
+    .box-card {
+        padding: 10px;
+        margin: 0 auto;
+        width: 480px;
+    }
+
+    .app_content {
+        position: absolute;
+        top: 20%;
+        width: 100%;
+        text-align: center;
+    }
 </style>
