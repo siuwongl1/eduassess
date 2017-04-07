@@ -4,7 +4,7 @@
             <el-form-item label="专业" prop="pro">
                 <el-input type="text" v-model="userForm.pro"></el-input>
             </el-form-item>
-            <el-form-item label="班级" prop="cls">
+            <el-form-item label="班级" prop="cls" v-if="isStudent">
                 <el-input type="text" v-model="userForm.cls"></el-input>
             </el-form-item>
             <el-form-item label="姓名" prop="name">
@@ -69,6 +69,7 @@
             return {
                 labelPosition: 'right',
                 loading: false,
+                submited:false,
                 isStudent: this.$route.params.type == 1,
                 type: this.$route.params.type,// 用户类型
                 userForm: {
@@ -89,12 +90,22 @@
         created(){
             this.fetchData();
         },
+        watch:{
+            info:function (newInfo) {
+                this.submited = false;  //监测表单数据是否发生改变，如果没有改变，则不允许重复提交表单
+            }
+        },
         methods: {
             onSubmit: function (formName) {
+                if(this.submited){
+                   this.$message.warning('您的信息没有任何改变哦');
+                   return ;
+                }
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.loading = true;
                         var url = `/api/user/${this.$route.params.uid}`;
+                        this.submited = true;
                         http.putJson(url, this.info).then((value) => {
                             this.loading = false;
                             http.parseResp(value).then((json) => {
@@ -110,6 +121,7 @@
                 })
             },
             onReset: function (formName) {
+                this.userForm.sex = 1;
                 this.$refs[formName].resetFields();
             },
             fetchData: function () {

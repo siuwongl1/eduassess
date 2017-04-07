@@ -50,6 +50,7 @@
             return {
                 labelPosition: 'right',
                 loading: false,
+                submited:false,
                 user: {
                     username: this.$route.params.username,
                     password: '',
@@ -63,8 +64,17 @@
                 }
             };
         },
+        watch:{
+            pw:function (newPw) {
+                this.submited = false;
+            }  
+        },
         methods: {
             onSubmit: function (formName) {
+                if(this.submited){
+                    this.$message.warning('您的信息没有任何改变哦');
+                    return;
+                }
                 this.$refs[formName].validate((valid) => {
                     if(valid){
                         this.loading = true;
@@ -75,6 +85,7 @@
 //                }).catch((err)=>{
 //                    console.log(err);
 //                });
+                        this.submited =true; //已提交该表单
                         http.putJson(url, this.pw).then((value) => {
                             http.parseResp(value).then((json) => {
                                 this.$message(json.message);
