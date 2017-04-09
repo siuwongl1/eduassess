@@ -52,7 +52,7 @@
                 loading: false,
                 submited:false,
                 user: {
-                    username: this.$route.params.username,
+                    username: this.$store.state.username,
                     password: '',
                     retype: '',
                     origin: ''
@@ -78,14 +78,8 @@
                 this.$refs[formName].validate((valid) => {
                     if(valid){
                         this.loading = true;
-                        var url = `/api/user/pw/${this.$route.params.uid}`;
-//                co(function *() {  //??? 没有反应？Promise 返回co没有对iterator遍历？
-//                    var result = yield http.putJson(url, this.user);
-//                    console.log(result);
-//                }).catch((err)=>{
-//                    console.log(err);
-//                });
                         this.submited =true; //已提交该表单
+                        var url = `/api/user/pw/${this.$route.params.uid}`;
                         http.putJson(url, this.pw).then((value) => {
                             http.parseResp(value).then((json) => {
                                 this.$message(json.message);

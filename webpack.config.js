@@ -73,7 +73,8 @@ module.exports = (options = {}) => ({
   resolve: {
     alias: {
       '~': resolve(__dirname, 'src'),
-      'http$':resolve(__dirname,'src/util/HttpRequest.js')  //http请求相关的操作工具
+      'http$':resolve(__dirname,'src/util/HttpRequest.js'),  //http请求相关的操作工具
+      'valid$':resolve(__dirname,'src/util/Valid.js')  //http请求相关的操作工具
     }
   },
   devServer: {

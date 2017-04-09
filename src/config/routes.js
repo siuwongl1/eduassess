@@ -7,6 +7,7 @@ import Main from '../pages/Main.vue'
 import App from '../App.vue'
 import MPW from '../pages/ModifyPw.vue'
 import UserInfo from '../pages/UserInfo.vue'
+import Course from '../pages/Courses.vue'
 export default [{
     path: '/',
     component: App,
@@ -19,10 +20,12 @@ export default [{
         },
         {
             name:'index',
-            path: '/index/:name', // 主界面
+            path: '/index', // 主界面
             meta: { auth: false },
             component: Main,
             children:[
+                {path:'',component:Course},
+                {name:'courseManage',path:'courseManage',component:Course},
                 {name:'modifyPw',path:'modifyPw',component:MPW},
                 {name:'userInfo',path:'userInfo',component:UserInfo}
             ]

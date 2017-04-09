@@ -20,7 +20,9 @@
                                 <el-radio :label="3">管理员</el-radio>
                             </el-radio-group>
                         </el-form-item>
-                        <el-button id="btn_login" type="primary" class="item-btn-login" @click="login">登录</el-button>
+                        <el-button id="btn_login" type="primary" class="item-btn-login" @click="login('loginForm')">登录
+
+                        </el-button>
                         <p class="item-p"><a class="item-p-link" href="#">无法登录？</a></p>
                     </el-form>
                 </el-tab-pane>
@@ -34,10 +36,12 @@
                             <el-input v-model="registerForm.email" class="item" placeholder="请输入您的邮箱"></el-input>
                         </el-form-item>
                         <el-form-item label="密码" prop="password" class="item-label">
-                            <el-input v-model="registerForm.password" type="password" class="item" placeholder="请输入您的密码"></el-input>
+                            <el-input v-model="registerForm.password" type="password" class="item"
+                                      placeholder="请输入您的密码"></el-input>
                         </el-form-item>
                         <el-form-item label="确认密码" prop="retype" class="item-label">
-                            <el-input v-model="registerForm.retype" type="password" class="item" placeholder="请输入确认密码"></el-input>
+                            <el-input v-model="registerForm.retype" type="password" class="item"
+                                      placeholder="请输入确认密码"></el-input>
                         </el-form-item>
                         <el-form-item label="用户类型" prop="type" class="item-label">
                             <el-radio-group v-model="registerForm.type" size="small" class="item-radio">
@@ -46,7 +50,9 @@
                                 <el-radio :label="3">管理员</el-radio>
                             </el-radio-group>
                         </el-form-item>
-                        <el-button type="primary" class="item-btn-login" @click="register">注册</el-button>
+                        <el-button type="primary" class="item-btn-login" @click="register('registerForm')">注册
+
+                        </el-button>
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
@@ -123,43 +129,66 @@
         },
         methods: {
             login: function (formName) {
-                this.loading = true;
-                var user = this.user;
-                http.postJson('/api/user/login', user).then((value) => {
-                    http.parseResp(value).then((result) => {
-                        //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
-                        this.$router.push({
-                            name: 'index',
-                            params: {name: this.loginForm.username, uid: result.data, type: this.loginForm.type}
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.loading = true;
+                        var user = this.user;
+                        http.postJson('/api/user/login', user).then((value) => {
+                            http.parseResp(value).then((result) => {
+                                //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
+                                this.$store.commit('storeUser', {
+                                    username: this.loginForm.username,
+                                    uid: result.data,
+                                    type: this.loginForm.type
+                                });
+                                this.$router.push({
+                                    name: 'index',
+                                    params: {name: this.loginForm.username, uid: result.data, type: this.loginForm.type}
+                                });
+                            }, (err) => {
+                                this.$message.warning(err);
+                            })
+                            this.loading = false;
+                        }, (err) => {
+                            this.$message.error(err);
+                            this.loading = false;
                         });
-                    }, (err) => {
-                        this.$message.warning(err);
-                    })
-                    this.loading = false;
-                }, (err) => {
-                    this.$message.error(err);
-                    this.loading = false;
-                });
+                    }
+                })
             },
             register: function (formName) {
-                this.loading = true;
-                var user = this.user;
-                http.postJson('/api/user', user).then((value) => {
-                    http.parseResp(value).then((result) => {
-                        //注册成功,跳转主界面
-                        this.$router.push({
-                            name: 'index',
-                            params: {name: this.registerForm.username, uid: result.data, type: this.registerForm.type}
-                        });
-                    }, (err) => {
-                        this.$message.warning(err);
-                    })
-                    this.loading = false;
-                }, (err) => {
-                    this.$message.warning(err);
-                    this.loading = false;
-                }).catch((err) => {
-                    this.loading = false;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.loading = true;
+                        var user = this.user;
+                        http.postJson('/api/user', user).then((value) => {
+                            http.parseResp(value).then((result) => {
+                                //注册成功,跳转主界面
+                                this.$store.commit('storeUser', {
+                                    username: this.registerForm.username,
+                                    uid: result.data,
+                                    type: this.registerForm.type
+                                });
+                                this.$router.push({
+                                    name: 'index',
+                                    params: {
+                                        name: this.registerForm.username,
+                                        uid: result.data,
+                                        type: this.registerForm.type
+                                    }
+                                });
+                            }, (err) => {
+                                this.$message.warning(err);
+                            })
+                            this.loading = false;
+                        }, (err) => {
+                            this.$message.warning(err);
+                            this.loading = false;
+                        }).catch((err) => {
+                            console.log(err);
+                            this.loading = false;
+                        })
+                    }
                 })
             }
         },
@@ -187,15 +216,18 @@
     body {
         font-family: Helvetica, sans-serif;
     }
+
     .text {
         font-size: 14px;
     }
+
     .app_content {
         position: absolute;
         top: 20%;
         width: 100%;
         text-align: center;
     }
+
     .item {
         margin: 0 auto;
         width: 320px;
@@ -207,11 +239,12 @@
 
     .item-p {
         text-align: right;
+        margin-top: 20px;
     }
 
     .item-p-link {
         text-decoration: none;
-        margin-right: 80px;
+        margin-right: 40px;
         font-size: 14px;
         color: #8492A6;
     }

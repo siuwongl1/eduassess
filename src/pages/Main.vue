@@ -1,14 +1,13 @@
 <template>
     <div>
         <el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelect">
-            <el-menu-item index="1">我的课堂</el-menu-item>
+            <el-menu-item v-if="isStudent" index="1">我的课堂</el-menu-item>
+            <el-menu-item v-else index="1">课程管理</el-menu-item>
             <el-menu-item index="3">我的消息
-
                 <el-badge class="mark" :value="messageBadge"/>
             </el-menu-item>
-
             <el-submenu index="2">
-                <template slot="title">{{ $route.params.name }}</template>
+                <template slot="title">{{ this.$store.state.username }}</template>
                 <el-menu-item index="2-1">个人信息</el-menu-item>
                 <el-menu-item index="2-2">修改密码</el-menu-item>
                 <el-menu-item index="2-4">我的动态</el-menu-item>
@@ -26,29 +25,40 @@
         data() {
             return {
                 activeIndex: '1',
-                isStudent: this.$route.params.type == 1,
+                isStudent: this.$store.state.type == 1,
                 messageBadge: 0
             };
         },
+
+        created(){
+            console.log(this.$store.state.username);
+        },
         methods: {
             handleSelect(key, keyPath) {
-                if (keyPath[1] === '2-1') {  //个人信息
+                console.log(this.$store.state.username);
+                if (key === '1') {  //我的课堂或课堂管理
+                    this.$router.push({
+                        name: 'courseManage',
+                        params: {type: this.$route.params.type, uid: this.$route.params.uid}
+                    })
+                } else if (key === '2-1') {  //个人信息
                     this.$router.push({
                         name: 'userInfo',
                         params: {type: this.$route.params.type, uid: this.$route.params.uid}
                     })
-                } else if (keyPath[1] === '2-2') { //修改密码
+                } else if (key === '2-2') { //修改密码
                     this.$router.push({
                         name: 'modifyPw',
                         params: {username: this.$route.params.name, uid: this.$route.params.uid}
                     })
-                } else if (keyPath[1] === '2-3') { //消息
+                } else if (key === '2-3') { //消息
 
-                } else if (keyPath[1] === '2-4') { //我的动态
+                } else if (key === '2-4') { //我的动态
 
-                } else if (keyPath[1] === '2-5') { //加入班级（学生）
+                } else if (key === '2-5') { //加入班级（学生）
 
-                } else if (keyPath[1] === '2-6') { //退出
+                } else if (key === '2-6') { //退出
+                    localStorage.clear();//清空本地数据
                     this.$router.replace({name: 'login'});
                 }
             }
