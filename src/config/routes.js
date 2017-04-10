@@ -8,6 +8,7 @@ import App from '../App.vue'
 import MPW from '../pages/ModifyPw.vue'
 import UserInfo from '../pages/UserInfo.vue'
 import Course from '../pages/Courses.vue'
+import NewCourse from '../pages/NewCourse.vue'
 export default [{
     path: '/',
     component: App,
@@ -27,7 +28,8 @@ export default [{
                 {path:'',component:Course},
                 {name:'courseManage',path:'courseManage',component:Course},
                 {name:'modifyPw',path:'modifyPw',component:MPW},
-                {name:'userInfo',path:'userInfo',component:UserInfo}
+                {name:'userInfo',path:'userInfo',component:UserInfo},
+                {name:'newCourse',path:'newCourse',component:NewCourse},
             ]
         },
         {

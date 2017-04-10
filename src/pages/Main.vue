@@ -4,6 +4,7 @@
             <el-menu-item v-if="isStudent" index="1">我的课堂</el-menu-item>
             <el-menu-item v-else index="1">课程管理</el-menu-item>
             <el-menu-item index="3">我的消息
+
                 <el-badge class="mark" :value="messageBadge"/>
             </el-menu-item>
             <el-submenu index="2">
@@ -29,27 +30,19 @@
                 messageBadge: 0
             };
         },
-
-        created(){
-            console.log(this.$store.state.username);
-        },
         methods: {
             handleSelect(key, keyPath) {
-                console.log(this.$store.state.username);
                 if (key === '1') {  //我的课堂或课堂管理
                     this.$router.push({
-                        name: 'courseManage',
-                        params: {type: this.$route.params.type, uid: this.$route.params.uid}
+                        name: 'courseManage'
                     })
                 } else if (key === '2-1') {  //个人信息
                     this.$router.push({
-                        name: 'userInfo',
-                        params: {type: this.$route.params.type, uid: this.$route.params.uid}
+                        name: 'userInfo'
                     })
                 } else if (key === '2-2') { //修改密码
                     this.$router.push({
-                        name: 'modifyPw',
-                        params: {username: this.$route.params.name, uid: this.$route.params.uid}
+                        name: 'modifyPw'
                     })
                 } else if (key === '2-3') { //消息
 
@@ -68,7 +61,7 @@
 <style>
     .center-content {
         position: absolute;
-        top: 20%;
+        top: 10%;
         width: 100%;
         text-align: center;
     }

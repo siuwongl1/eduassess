@@ -168,10 +168,6 @@
     .box-card {
         width: 480px;
     }
-
-    .item-sex {
-    }
-
     .item-button {
         width: 100px;
     }
