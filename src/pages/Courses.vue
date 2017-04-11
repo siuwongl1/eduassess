@@ -1,34 +1,30 @@
 <template>
     <div>
-        <el-row>
-            <el-col :span="24">
-                <el-form :inline="true" style="text-align: left;padding: 20px" @submit.native.prevent>
-                    <el-form-item label="学期">
-                        <period-component v-on:periodSubmit="periodSubmit"></period-component>
-                        <el-button type="primary" @click="queryCourse">查询</el-button>
-                        <el-button type="primary" @click="addCourse">添加课程</el-button>
-                    </el-form-item>
-                </el-form>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col>
-
-            </el-col>
-        </el-row>
+        <el-form :inline="true" style="text-align: left;padding: 5px" @submit.native.prevent>
+            <el-form-item label="学期">
+                <period-input v-on:periodSubmit="periodSubmit"></period-input>
+                <el-button type="primary" @click="queryCourse">查询</el-button>
+                <el-button type="primary" @click="addCourse">添加课程</el-button>
+            </el-form-item>
+        </el-form>
+        <div style="height: 1px;background-color: #aebdc9;margin: 0 0 10px 0"></div>
+        <course-list v-bind:courses="this.courses"></course-list>
     </div>
 </template>
 <script>
     import http from 'http';
     import periodComponent from '../components/period-input.vue'
+    import courseListComponent from '../components/course-list.vue'
     export default {
         data() {
             return {
-                period:'',
+                period: '',
+                courses: []
             }
         },
-        components:{
-            periodComponent
+        components: {
+            'period-input':periodComponent,
+            'course-list' :courseListComponent
         },
         created(){
             this.fetchData();
@@ -36,20 +32,20 @@
         methods: {
             fetchData () {
                 var url;
-                if(this.period===''){
+                if (this.period === '') {
                     url = `/api/course/user/${this.$store.state.uid}`;
-                }else{
+                } else {
                     url = `/api/course/user/${this.$store.state.uid}/period/${this.period}`;
                 }
-                http.getJson(url).then((value)=>{
-                    http.parseResp(value).then((resp)=>{
-                        console.log(resp.data);
-                    },(err)=>{
+                http.getJson(url).then((value) => {
+                    http.parseResp(value).then((resp) => {
+                        this.courses = resp.data;
+                    }, (err) => {
                         this.$message.error(err);
                     })
-                },(err)=>{
+                }, (err) => {
 
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.log(err);
                 })
             },
@@ -60,7 +56,14 @@
                 this.fetchData();
             },
             addCourse(){
-                this.$router.push({name:'newCourse'})
+                this.$router.push({name: 'newCourse'})
+            }
+        },
+        computed: {
+            filterBoxNumber: () => {
+                return this.courses.filter((course) => {
+
+                })
             }
         }
     }

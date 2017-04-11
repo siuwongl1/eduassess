@@ -124,11 +124,11 @@
             course: {
                 get: function () {
                     var formData = new FormData();
-                    formData.append('name', this.courseForm.name);
-                    formData.append('cls', this.courseForm.cls);
-                    formData.append('pro', this.courseForm.pro);
-                    formData.append('period', this.courseForm.period);
-                    formData.append('uid', this.$store.state.uid);
+                    formData.append('name', this.courseForm.name); //课程名称
+                    formData.append('cls', this.courseForm.cls); //班级名称
+                    formData.append('pro', this.courseForm.pro); //专业名称
+                    formData.append('period', this.courseForm.period); //学期
+                    formData.append('uid', this.$store.state.uid); //教师id
                     return formData;
                 }
             }
