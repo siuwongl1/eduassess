@@ -17,7 +17,8 @@ const store = new Vuex.Store({
     state: {
         uid: localStorage.getItem('uid'),
         username: localStorage.getItem('username'),
-        type: localStorage.getItem('type')
+        type: localStorage.getItem('type'),
+        name: localStorage.getItem('name'),
     },
     mutations: {
         storeUser (state, payload) {
@@ -25,9 +26,11 @@ const store = new Vuex.Store({
             localStorage.setItem('uid',payload.uid);
             localStorage.setItem('type',payload.type);
             localStorage.setItem('username',payload.username);
+            localStorage.setItem('name',payload.name);
             state.username = payload.username;
             state.type = payload.type;
             state.uid = payload.uid;
+            state.name = payload.name;
         }
     }
 })

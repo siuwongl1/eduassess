@@ -1,10 +1,10 @@
 <template>
     <div>
-        <el-form :inline="true" style="text-align: left;padding: 5px" @submit.native.prevent>
+        <el-form :inline="true" style="text-align: left;padding: 5px;margin-left:15px;line-height: 36px;height: 36px" @submit.native.prevent>
             <el-form-item label="学期">
                 <period-input v-on:periodSubmit="periodSubmit"></period-input>
                 <el-button type="primary" @click="queryCourse">查询</el-button>
-                <el-button type="primary" @click="addCourse">添加课程</el-button>
+                <el-button type="primary" v-if="!isStudent" @click="addCourse">添加课程</el-button>
             </el-form-item>
         </el-form>
         <div style="height: 1px;background-color: #aebdc9;margin: 0 0 10px 0"></div>
@@ -19,6 +19,7 @@
         data() {
             return {
                 period: '',
+                isStudent:this.$store.state.type===1,
                 courses: []
             }
         },
@@ -39,7 +40,7 @@
                 }
                 http.getJson(url).then((value) => {
                     http.parseResp(value).then((resp) => {
-                        this.courses = resp.data;
+                        this.courses = resp;
                     }, (err) => {
                         this.$message.error(err);
                     })

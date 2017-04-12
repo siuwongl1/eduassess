@@ -77,7 +77,7 @@ export default {
                 var obj = JSON.parse(result);
                 var code = obj.statusCode;
                 if (code == 0) {
-                    resolve(obj); //返回Json Object
+                    resolve(obj.data); //返回data
                 } else {
                     reject(obj.message);
                 }

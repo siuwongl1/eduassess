@@ -24,6 +24,7 @@
 </template>
 <script>
     import http from 'http';
+    import global from 'global';
     export default{
         data(){
             var checkName = (rule, value, cb) => {
@@ -51,6 +52,7 @@
                 labelPosition: 'right',
                 loading:false,
                 submited:false,
+                formType:'post',
                 courseForm: {
                     name: '',
                     period: '',
@@ -65,7 +67,13 @@
             }
         },
         created(){
-            this.courseForm.period = this.getCurrentPeriod();
+            if(this.$route.params.cid){
+                this.fetchData();
+                this.formType='put';
+            }else{
+                this.courseForm.period = global.getCurrentPeriod();
+                this.formType='post';
+            }
         },
         watch:{
             course:function () {
@@ -74,21 +82,36 @@
             }
         },
         methods: {
-            getCurrentPeriod(){
-                var date = new Date();
-                var year = date.getFullYear();
-                var month = date.getMonth();
-                var result;
-                if (month > 9) {
-                    //第一个学期
-                    result = `${year}/${year + 1}(1)`;
-                } else {
-                    //第二个学期
-                    result = `${year - 1}/${year}(2)`;
-                }
-                return result;
+            fetchData(){
+                var url =`/api/course/${this.$route.params.cid}`;
+                http.getJson(url).then((value)=>{
+                    http.parseResp(value).then((result)=>{
+                        if(result.length>0){
+                            var course = result[0];
+                            this.courseForm.name=  course.name;
+                            this.courseForm.pro=  course.pro;
+                            this.courseForm.cls=  course.cls;
+                            this.courseForm.period=  course.period;
+                        }
+                    },(err)=>{
+                        this.$message.error(err);
+                    })
+                },(err)=>{
+                    this.$message.error(err);
+                }).catch((err)=>{
+                    console.log(err);
+                })
             },
             onSubmit(formName){
+                if(this.$store.state.name===''){
+                    this.$alert('您的信息还未完善，请完善后再进行课程添加哦','提示',{
+                        confirmButtonText:'前往个人信息页面',
+                        callback:(action)=>{
+                            this.$router.push({name:'userInfo'});
+                        }
+                    })
+                    return ;
+                }
                 if(this.submited){
                     this.$message.warning('您的信息没有任何改变哦');
                     return;
@@ -96,28 +119,53 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.loading = true;
-                        var url = '/api/course';
-                        http.postJson(url,this.course).then((value)=>{
-                            this.loading = false;
-                            this.submited =true;
-                            http.parseResp(value).then((json)=>{
-                                this.$message('添加成功！');
-                            },(err)=>{
-                                this.$message.error(err);
-                            })
-                        },(err)=>{
-                            this.loading = false;
-                            this.$message.error(err);
-                        }).catch((err)=>{
-                            this.loading = false;
-                            console.log(err);
-                        })
+                        if(this.formType==='post'){
+                            this.postData();
+                        }else if(this.formType==='put'){
+                            this.putData();
+                        }
                     }
 
                 })
             },
             onReset(formName){
                 this.$refs[formName].resetFields();
+            },
+            putData(){
+                var url = `/api/course/${this.$route.params.cid}`;
+                http.putJson(url,this.course).then((value)=>{
+                    this.loading = false;
+                    this.submited =true;
+                    http.parseResp(value).then((json)=>{
+                        this.$message('修改成功！');
+                    },(err)=>{
+                        this.$message.error(err);
+                    })
+                },(err)=>{
+                    this.loading = false;
+                    this.$message.error(err);
+                }).catch((err)=>{
+                    this.loading = false;
+                    console.log(err);
+                })
+            },
+            postData(){
+                var url = '/api/course';
+                http.postJson(url,this.course).then((value)=>{
+                    this.loading = false;
+                    this.submited =true;
+                    http.parseResp(value).then((json)=>{
+                        this.$message('添加成功！');
+                    },(err)=>{
+                        this.$message.error(err);
+                    })
+                },(err)=>{
+                    this.loading = false;
+                    this.$message.error(err);
+                }).catch((err)=>{
+                    this.loading = false;
+                    console.log(err);
+                })
             }
         },
         computed: {
@@ -129,6 +177,7 @@
                     formData.append('pro', this.courseForm.pro); //专业名称
                     formData.append('period', this.courseForm.period); //学期
                     formData.append('uid', this.$store.state.uid); //教师id
+                    formData.append('tname',this.$store.state.name); //教师名称
                     return formData;
                 }
             }

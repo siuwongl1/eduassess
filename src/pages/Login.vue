@@ -136,10 +136,12 @@
                         http.postJson('/api/user/login', user).then((value) => {
                             http.parseResp(value).then((result) => {
                                 //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
+                                console.log(result)
                                 this.$store.commit('storeUser', {
                                     username: this.loginForm.username,
-                                    uid: result.data,
-                                    type: this.loginForm.type
+                                    uid: result._id,
+                                    name:result.name,
+                                    type: this.loginForm.type,
                                 });
                                 this.$router.push({
                                     name: 'index',
@@ -166,14 +168,15 @@
                                 //注册成功,跳转主界面
                                 this.$store.commit('storeUser', {
                                     username: this.registerForm.username,
-                                    uid: result.data,
-                                    type: this.registerForm.type
+                                    uid: result._id,
+                                    type: this.registerForm.type,
+                                    name:''
                                 });
                                 this.$router.push({
                                     name: 'index',
                                     params: {
                                         name: this.registerForm.username,
-                                        uid: result.data,
+                                        uid: result._id,
                                         type: this.registerForm.type
                                     }
                                 });

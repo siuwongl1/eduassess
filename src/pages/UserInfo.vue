@@ -26,7 +26,6 @@
                 <el-button class="item-button" type="primary" @click="onSubmit('userForm')">确定</el-button>
                 <el-button class="item-button" type="primary" @click="onReset('userForm')">重置</el-button>
             </div>
-
         </el-form>
     </el-card>
 </template>
@@ -129,8 +128,8 @@
                 var url = `/api/user/${this.$store.state.uid}`;
                 http.getJson(url).then((value) => {
                     http.parseResp(value).then((result) => {
-                        if (result.data.length > 0) {
-                            var user = result.data[0];
+                        if (result.length>0) {
+                            var user = result[0];
                             this.userForm.pro = user.pro;
                             this.userForm.cls = user.cls;
                             this.userForm.name = user.name;

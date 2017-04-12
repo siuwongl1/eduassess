@@ -74,7 +74,8 @@ module.exports = (options = {}) => ({
     alias: {
       '~': resolve(__dirname, 'src'),
       'http$':resolve(__dirname,'src/util/HttpRequest.js'),  //http请求相关的操作工具
-      'valid$':resolve(__dirname,'src/util/Valid.js')  //http请求相关的操作工具
+      'valid$':resolve(__dirname,'src/util/Valid.js'),  //正则校验的操作工具
+      'global$':resolve(__dirname,'src/util/global.js'), //多处地方用到的公共操作
     }
   },
   devServer: {

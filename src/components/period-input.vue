@@ -8,6 +8,7 @@
     ></el-autocomplete>
 </template>
 <script>
+    import global  from 'global';
     export default {
         data() {
             return {
@@ -31,7 +32,7 @@
                 var result = new Array();
                 for (var i = 0; i <10; i++) {
                     for (var k = 0; k < 2; k++) {
-                        result.push({"value":`${year - i - 1}/${year - i}(${k + 1})`})
+                        result.push({"value":`${year - i - 1}-${year - i}(${k + 1})`})
                     }
                 }
                 return result;
@@ -40,10 +41,15 @@
                 return (period) => {
                     return (period.value.indexOf(queryString.toLowerCase()) === 0);
                 };
+            },
+            changeValue(){
+                console.log('Value is changing ');
             }
         },
         mounted() {
             this.periods = this.loadPeriod();
+            this.period = global.getCurrentPeriod();
+            this.$emit('periodSubmit',this.period);
         }
     }
 </script>
