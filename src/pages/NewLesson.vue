@@ -37,6 +37,8 @@
                 }
             }
             return {
+                loading:false,
+                labelPosition:'right',
                 lessonForm:{
                     name:'',
                     content:''
@@ -61,15 +63,18 @@
                 }
                 this.$refs[formName].validate((valid)=>{
                     if(valid){
-                        var url =`/api/course/${this.$route.params.cid}/lesson`;
+                        this.loading =true;
+                        var url =`/api/lesson/${this.$route.params.cid}`;
                         http.postJson(url,this.lesson).then((value)=>{
+                            this.loading =false;
                             http.parseResp(value).then((result)=>{
-
+                                this.$message('添加成功');
                             },(err)=>{
-
+                                this.$message.error(err);
                             })
                         },(err)=>{
-
+                            this.loading =false;
+                            console.log(err);
                         });
                     }
                 })
@@ -84,7 +89,7 @@
                     var formData = new FormData();
                     formData.append('name',this.lessonForm.name);
                     formData.append('content',this.lessonForm.content);
-                    formData.append('uid',this.$route.params.cid);
+                    formData.append('cid',this.$route.params.cid);
                     return formData;
                 }
             }
