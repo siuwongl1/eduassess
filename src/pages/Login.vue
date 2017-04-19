@@ -20,9 +20,7 @@
                                 <el-radio :label="3">管理员</el-radio>
                             </el-radio-group>
                         </el-form-item>
-                        <el-button id="btn_login" type="primary" class="item-btn-login" @click="login('loginForm')">登录
-
-                        </el-button>
+                        <el-button id="btn_login" type="primary" class="item-btn-login" @click="login('loginForm')">登录</el-button>
                         <p class="item-p"><a class="item-p-link" href="#">无法登录？</a></p>
                     </el-form>
                 </el-tab-pane>
@@ -47,12 +45,9 @@
                             <el-radio-group v-model="registerForm.type" size="small" class="item-radio">
                                 <el-radio :label="1">学生</el-radio>
                                 <el-radio :label="2">教师</el-radio>
-                                <el-radio :label="3">管理员</el-radio>
                             </el-radio-group>
                         </el-form-item>
-                        <el-button type="primary" class="item-btn-login" @click="register('registerForm')">注册
-
-                        </el-button>
+                        <el-button type="primary" class="item-btn-login" @click="register('registerForm')">注册</el-button>
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
@@ -142,6 +137,8 @@
                                     uid: result._id,
                                     name:result.name,
                                     type: this.loginForm.type,
+                                    pro:result.pro,
+                                    cls:result.cls
                                 });
                                 this.$router.push({
                                     name: 'index',

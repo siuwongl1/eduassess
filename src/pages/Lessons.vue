@@ -29,7 +29,6 @@
             var url = `/api/lesson/${this.$route.params.cid}`;
             http.getJson(url).then((value)=> {
                 http.parseResp(value).then((result)=>{
-                    console.log(result);
                     if(result.length>0){
                         this.lessons = result[0].lessons;
                     }

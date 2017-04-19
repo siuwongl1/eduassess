@@ -55,7 +55,8 @@
                 <div class="divide-line" style="padding: 10px;">
                     <el-button type="text" class="button" @click="goLesson(c)">课堂</el-button>
                     <el-button type="text" v-if="!isStudent" class="button" @click="modify(c)" style="margin-right: 10px">修改</el-button>
-                    <el-button type="text" v-else-if="this.$store.state.type===3" @click="remove(c)" class="button">删除</el-button>
+                    <el-button type="text" v-else class="button" @click="modify(c)" style="margin-right: 10px">加入该课程</el-button>
+                    <el-button type="text" v-if="this.$store.state.type===3" @click="remove(c)" class="button">删除</el-button>
                     <div class="bottom clearfix">
                     </div>
                 </div>

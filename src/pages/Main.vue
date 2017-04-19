@@ -49,7 +49,7 @@
                 } else if (key === '2-4') { //我的动态
 
                 } else if (key === '2-5') { //加入班级（学生）
-
+                    this.$router.push({name:'joinCourse'})
                 } else if (key === '2-6') { //退出
                     localStorage.clear();//清空本地数据
                     this.$router.replace({name: 'login'});

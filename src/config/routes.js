@@ -11,6 +11,7 @@ import Course from '../pages/Courses.vue'
 import NewCourse from '../pages/NewCourse.vue'
 import Lesson from '../pages/Lessons.vue'
 import NewLesson from '../pages/NewLesson.vue'
+import joinCourse from '../pages/JoinClass.vue'
 export default [{
     path: '/',
     component: App,
@@ -34,6 +35,7 @@ export default [{
                 {name:'newCourse',path:'newCourse/:cid',component:NewCourse},
                 {name:'lessonManage',path:'lessons/:cid',component:Lesson},
                 {name:'newLesson',path:'newLesson/:cid',component:NewLesson},
+                {name:'joinCourse',path:'join',component:joinCourse},
             ]
         },
         {
