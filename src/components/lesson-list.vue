@@ -28,6 +28,9 @@
                         </el-col>
                     </el-row>
                 </div>
+                <!--<div class="divide-line">-->
+                    <!--<el-button type="text" class="button" @click="goLesson(c)">课堂</el-button>-->
+                <!--</div>-->
             </el-card>
         </el-col>
     </el-row>
@@ -41,9 +44,10 @@
             }
         },
         methods:{
+            showDetal(c){
 
+            }
         }
-
     }
 </script>
 <style>
@@ -52,18 +56,10 @@
         text-align: left;
     }
 
-    .time {
-        font-size: 13px;
-        color: #999;
-    }
 
-    .bottom {
-        margin-top: 13px;
-        line-height: 12px;
-    }
 
     .button {
-        padding: 0;
+        padding: 10px;
         float: right;
     }
 
@@ -76,13 +72,5 @@
     }
     .content span{
         word-wrap: break-word;
-    }
-    .clearfix:before,
-    .clearfix:after {
-        display: table;
-        content: "";
-    }
-    .clearfix:after {
-        clear: both
     }
 </style>

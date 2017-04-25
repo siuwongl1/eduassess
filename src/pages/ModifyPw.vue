@@ -52,7 +52,7 @@
                 loading: false,
                 submited:false,
                 user: {
-                    username: this.$store.state.username,
+                    username: this.$store.state.user.username,
                     password: '',
                     retype: '',
                     origin: ''

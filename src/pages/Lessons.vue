@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form :inline="true" style="text-align: left;padding: 5px;line-height: 36px;height: 36px"
+        <el-form v-if="!isStudent" :inline="true" style="text-align: left;padding: 5px;line-height: 36px;height: 36px"
                  @submit.native.prevent>
             <el-button type="primary" @click="addLesson">添加课堂</el-button>
         </el-form>
@@ -14,6 +14,7 @@
     export default{
         data(){
             return {
+                isStudent:false,
                 lessons:[]
             }
         },
@@ -26,7 +27,8 @@
             }
         },
         created(){
-            var url = `/api/lesson/${this.$route.params.cid}`;
+            this.isStudent=this.$store.state.user.type===1;
+            var url = `/api/lessons/${this.$route.params.cid}`;
             http.getJson(url).then((value)=> {
                 http.parseResp(value).then((result)=>{
                     if(result.length>0){

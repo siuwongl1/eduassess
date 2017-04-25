@@ -69,8 +69,8 @@
                 labelPosition: 'right',
                 loading: false,
                 submited:false,
-                isStudent: this.$store.state.type == 1,
-                type: this.$store.state.type,// 用户类型
+                isStudent: this.$store.state.user.type == 1,
+                type: this.$store.state.user.type,// 用户类型
                 userForm: {
                     pro: '',  //专业
                     cls: '',  //班级
@@ -103,7 +103,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.loading = true;
-                        var url = `/api/user/${this.$store.state.uid}`;
+                        var url = `/api/user/${this.$store.state.user.uid}`;
                         this.submited = true;
                         http.putJson(url, this.info).then((value) => {
                             this.loading = false;
@@ -125,7 +125,7 @@
             },
             fetchData: function () {
                 this.loading = true;
-                var url = `/api/user/${this.$store.state.uid}`;
+                var url = `/api/user/${this.$store.state.user.uid}`;
                 http.getJson(url).then((value) => {
                     http.parseResp(value).then((result) => {
                         if (result.length>0) {

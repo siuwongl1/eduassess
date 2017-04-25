@@ -50,8 +50,8 @@
             }
             return {
                 queryForm:{
-                    pro:this.$store.state.pro,
-                    cls:this.$store.state.cls,
+                    pro:this.$store.state.user.pro,
+                    cls:this.$store.state.user.cls,
                     period:global.getCurrentPeriod()
                 },
                 formRules:{

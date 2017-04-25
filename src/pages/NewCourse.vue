@@ -103,7 +103,7 @@
                 })
             },
             onSubmit(formName){
-                if(this.$store.state.name===''){
+                if(this.$store.state.user.name===''){
                     this.$alert('您的信息还未完善，请完善后再进行课程添加哦','提示',{
                         confirmButtonText:'前往个人信息页面',
                         callback:(action)=>{
@@ -176,8 +176,8 @@
                     formData.append('cls', this.courseForm.cls); //班级名称
                     formData.append('pro', this.courseForm.pro); //专业名称
                     formData.append('period', this.courseForm.period); //学期
-                    formData.append('uid', this.$store.state.uid); //教师id
-                    formData.append('tname',this.$store.state.name); //教师名称
+                    formData.append('uid', this.$store.state.user.uid); //教师id
+                    formData.append('tname',this.$store.state.user.name); //教师名称
                     return formData;
                 }
             }

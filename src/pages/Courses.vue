@@ -1,43 +1,42 @@
 <template>
     <div>
-        <el-form :inline="true" style="text-align: left;padding: 5px;margin-left:15px;line-height: 36px;height: 36px" @submit.native.prevent>
+        <el-form :inline="true" class="course-form"
+                 @submit.native.prevent>
             <el-form-item label="学期">
                 <period-input v-on:periodSubmit="periodSubmit"></period-input>
                 <el-button type="primary" @click="queryCourse">查询</el-button>
                 <el-button type="primary" v-if="!isStudent" @click="addCourse">添加课程</el-button>
             </el-form-item>
         </el-form>
-        <div style="height: 1px;background-color: #aebdc9;margin: 0 0 10px 0"></div>
         <course-list v-bind:courses="this.courses"></course-list>
     </div>
 </template>
 <script>
     import http from 'http';
+    import global from 'global'
     import periodComponent from '../components/period-input.vue'
     import courseListComponent from '../components/course-list.vue'
     export default {
         data() {
             return {
-                period: '',
-                isStudent:this.$store.state.type===1,
+                period: global.getCurrentPeriod(),
+                isStudent: this.$store.state.user.type === 1,
                 courses: []
             }
         },
         components: {
-            'period-input':periodComponent,
-            'course-list' :courseListComponent
+            'period-input': periodComponent,
+            'course-list': courseListComponent
         },
         created(){
             this.fetchData();
+            var path = new Array();
+            path.push({path:'courses',name:'courseManage',label:`${this.isStudent?'首页':'课程管理'}`});
+            this.$store.commit('storePath',path);
         },
         methods: {
             fetchData () {
-                var url;
-                if (this.period === '') {
-                    url = `/api/course/user/${this.$store.state.uid}`;
-                } else {
-                    url = `/api/course/user/${this.$store.state.uid}/period/${this.period}`;
-                }
+                var url = `/api/course/teacher/${this.$store.state.user.uid}/period/${this.period}`;
                 http.getJson(url).then((value) => {
                     http.parseResp(value).then((resp) => {
                         this.courses = resp;
@@ -70,5 +69,9 @@
     }
 </script>
 <style>
-
+    .course-form{
+        text-align: left;
+        /*line-height: 36px;*/
+        /*height: 36px*/
+    }
 </style>

@@ -20,7 +20,8 @@
                                 <el-radio :label="3">管理员</el-radio>
                             </el-radio-group>
                         </el-form-item>
-                        <el-button id="btn_login" type="primary" class="item-btn-login" @click="login('loginForm')">登录</el-button>
+                        <el-button id="btn_login" type="primary" class="item-btn-login" @click="login('loginForm')">登录
+                        </el-button>
                         <p class="item-p"><a class="item-p-link" href="#">无法登录？</a></p>
                     </el-form>
                 </el-tab-pane>
@@ -47,11 +48,15 @@
                                 <el-radio :label="2">教师</el-radio>
                             </el-radio-group>
                         </el-form-item>
-                        <el-button type="primary" class="item-btn-login" @click="register('registerForm')">注册</el-button>
+                        <el-button type="primary" class="item-btn-login" @click="register('registerForm')">注册
+                        </el-button>
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
         </el-card>
+        <p style="text-align: center" class="footer">
+            ©️2017 <a href="http://www.zjut.edu.cn/" target="_blank">浙江工业大学 </a><span class="dot">·</span><a href="http://www.et.zjut.edu.cn/" target="_blank">教育科学与技术学院</a>
+        </p>
     </div>
 
 </template>
@@ -131,17 +136,16 @@
                         http.postJson('/api/user/login', user).then((value) => {
                             http.parseResp(value).then((result) => {
                                 //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
-                                console.log(result)
                                 this.$store.commit('storeUser', {
                                     username: this.loginForm.username,
                                     uid: result._id,
-                                    name:result.name,
+                                    name: result.name,
                                     type: this.loginForm.type,
-                                    pro:result.pro,
-                                    cls:result.cls
+                                    pro: result.pro,
+                                    cls: result.cls
                                 });
                                 this.$router.push({
-                                    name: 'index',
+                                    path: '/index',
                                     params: {name: this.loginForm.username, uid: result.data, type: this.loginForm.type}
                                 });
                             }, (err) => {
@@ -167,7 +171,7 @@
                                     username: this.registerForm.username,
                                     uid: result._id,
                                     type: this.registerForm.type,
-                                    name:''
+                                    name: ''
                                 });
                                 this.$router.push({
                                     name: 'index',
@@ -194,7 +198,7 @@
         },
         computed: {
             user: {
-                get: function () {
+                get: function() {
                     var user = new FormData();
                     if (this.activeName == 'first') {  //登录表单
                         user.append('uid', this.loginForm.username);
