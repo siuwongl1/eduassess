@@ -28,9 +28,9 @@
                         </el-col>
                     </el-row>
                 </div>
-                <!--<div class="divide-line">-->
-                    <!--<el-button type="text" class="button" @click="goLesson(c)">课堂</el-button>-->
-                <!--</div>-->
+                <div class="divide-line">
+                    <el-button type="text" class="button" @click="showDetal(c)">详细信息</el-button>
+                </div>
             </el-card>
         </el-col>
     </el-row>
@@ -55,14 +55,10 @@
         border-top: solid #aebdc9 1px;
         text-align: left;
     }
-
-
-
     .button {
         padding: 10px;
         float: right;
     }
-
     .content {
         text-align: left;
         padding: 10px;

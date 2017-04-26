@@ -37,7 +37,7 @@
                     </el-row>
                     <el-row>
                         <el-col :span="leftSpan" class="label">
-                            开课时间：
+                            发布时间：
                         </el-col>
                         <el-col :span="rightSpan">
                             <span>{{c.date}}</span>
@@ -53,7 +53,7 @@
                     </el-row>
                 </div>
                 <div class="divide-line" style="padding: 5px 10px">
-                    <el-button type="text" v-if="type!=1" class="button" @click="goLesson(c)">课堂</el-button>
+                    <el-button type="text" class="button" @click="goLesson(c)">课堂</el-button>
                     <el-button type="text" v-if="type!=1" class="button" @click="modify(c)" style="margin-right: 10px">修改</el-button>
                     <el-button type="text" v-if="type==1" class="button" @click="join(c)" style="margin-right: 10px">加入该课程</el-button>
                     <el-button type="text" v-if="type==3" @click="remove(c)" class="button">删除</el-button>
@@ -71,7 +71,7 @@
             return {
                 leftSpan:8,
                 rightSpan:16,
-                isStudent:1,
+                isStudent:this.$store.state.user.type===1,
                 type:1,
                 currentDate: new Date().toLocaleDateString()
             }

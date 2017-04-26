@@ -4,7 +4,6 @@
                  @submit.native.prevent>
             <el-button type="primary" @click="addLesson">添加课堂</el-button>
         </el-form>
-        <div style="height: 1px;background-color: #aebdc9;margin: 0 0 10px 0"></div>
         <lesson-list v-bind:lessons="lessons"></lesson-list>
     </div>
 </template>

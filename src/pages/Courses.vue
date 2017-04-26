@@ -30,13 +30,10 @@
         },
         created(){
             this.fetchData();
-            var path = new Array();
-            path.push({path:'courses',name:'courseManage',label:`${this.isStudent?'首页':'课程管理'}`});
-            this.$store.commit('storePath',path);
         },
         methods: {
             fetchData () {
-                var url = `/api/course/teacher/${this.$store.state.user.uid}/period/${this.period}`;
+                var url = `/api/course/${this.isStudent?'student':'teacher'}/${this.$store.state.user.uid}/period/${this.period}`;
                 http.getJson(url).then((value) => {
                     http.parseResp(value).then((resp) => {
                         this.courses = resp;

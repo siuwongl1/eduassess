@@ -6,18 +6,17 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 //rotuer 管理
 import routes from './modules/routes'
+import store from '../store'
 const router = new VueRouter({
     routes, mode: 'history', base: __dirname
 })
 router.beforeEach((to, from, next) => {
-    ///登录状态判断，根据访问后端来实现，现在未实现，后期实现
     if(to.matched.some((record)=>{return record.meta.requiresAuth;})){
-        // if(this.$store.state.user.uid===''){
-        //     next({path:'/login'});
-        // }else{
-        //     next();
-        // }
-        next();
+        if(!store.state.user.uid||store.state.user.uid===''){
+            next({path:'/login'})  //未登录或已注销，重定向到login登录页
+        }else{
+            next();
+        }
     }else{
         next();
     }

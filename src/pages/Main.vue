@@ -41,13 +41,9 @@
         methods: {
             handleSelect(key, keyPath) {
                 if (key === '1') {  //评价课堂或学生首页
-                    if (this.isStudent) {
-                        this.$router.push({name: 'courseSquare'})
-                    } else {
-                        this.$router.push({
-                            name: 'courseManage'
-                        })
-                    }
+                    this.$router.push({
+                        name: 'courseManage'
+                    })
                 } else if (key === '2-1') {  //个人信息
                     this.$router.push({
                         name: 'userInfo'
