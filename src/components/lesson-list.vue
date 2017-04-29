@@ -29,7 +29,7 @@
                     </el-row>
                 </div>
                 <div class="divide-line">
-                    <el-button type="text" class="button" @click="showDetal(c)">详细信息</el-button>
+                    <el-button type="text" class="button" @click="showDetal(l)">详细信息</el-button>
                 </div>
             </el-card>
         </el-col>
@@ -40,12 +40,13 @@
         props:['lessons'],
         data(){
             return{
-
+                cid:this.$store.state.course.uid
             }
         },
         methods:{
-            showDetal(c){
-
+            showDetal(l){
+                this.$store.commit("storeLesson",{lid:l._id,name:l.name,content:l.content}); //存储当前Lesson状态
+                this.$router.push({name:'lesson',params:{lid:l._id,cid:this.cid}});
             }
         }
     }

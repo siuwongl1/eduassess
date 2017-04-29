@@ -13,8 +13,9 @@
     export default{
         data(){
             return {
-                isStudent:false,
-                lessons:[]
+                isStudent:this.$store.state.user.type===1,
+                lessons:[],
+                cid:this.$store.state.course.uid
             }
         },
         components:{
@@ -22,17 +23,15 @@
         },
         methods:{
             addLesson(){
-                this.$router.push({name:'newLesson',params:{cid:this.$route.params.cid}});
+                this.$router.push({name:'newLesson',params:{cid:cid}});
             }
         },
         created(){
             this.isStudent=this.$store.state.user.type===1;
-            var url = `/api/lessons/${this.$route.params.cid}`;
+            var url = `/api/lesson/course/${this.cid}`;
             http.getJson(url).then((value)=> {
                 http.parseResp(value).then((result)=>{
-                    if(result.length>0){
-                        this.lessons = result[0].lessons;
-                    }
+                        this.lessons = result;
                 },(err)=>{
                     this.$message.error(err);
                 })

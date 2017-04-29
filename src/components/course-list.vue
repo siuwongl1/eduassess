@@ -78,9 +78,11 @@
         },
         methods: {
             goLesson(course) {
+                this.$store.commit('storeCourse',{cid:course._id}); //存储当前course状态
                 this.$router.push({name:'lessonManage',params:{cid:course._id}});
             },
             modify(course) {
+                this.$store.commit('storeCourse',{cid:course._id}); //存储当前course状态
                 this.$router.push({name:'patchCourse',params:{cid:course._id}});
             },
             remove(course){

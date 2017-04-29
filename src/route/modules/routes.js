@@ -80,11 +80,11 @@ var LessonBeforeEnter =(to,from,next)=>{
     var path = new Array();
     if(isStudent){
         path.push({path:'courses',name:'courseManage',label:'首页'});
-        path.push({path:'lesson',name:'lesson/:lid',label:'课堂详情'});
+        path.push({path:'lesson/:lid',name:'lesson',label:'课堂详情'});
     }else{
         path.push({path:'courses',name:'courseManage',label:'课程管理'});
         path.push({path:'lessons/:cid',name:'lessonManage',label:'课堂管理'});
-        path.push({path:'lesson',name:'lesson/:lid',label:'课堂详情'});
+        path.push({path:'lesson/:lid',name:'lesson',label:'课堂详情'});
     }
     store.commit('storePath',path);
     next();

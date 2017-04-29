@@ -19,8 +19,7 @@
         <el-card>
             当前位置：
             <el-breadcrumb separator="/">
-                <!--<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>-->
-                <el-breadcrumb-item :to="{name:c.name}" v-for="(c,index) in this.crumbs">{{c.label}}
+                <el-breadcrumb-item :to="{name:c.name}" v-for="(c,index) in this.crumbs" replace>{{c.label}}
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </el-card>
