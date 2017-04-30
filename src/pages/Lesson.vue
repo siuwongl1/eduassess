@@ -5,6 +5,8 @@
             <p>{{this.lesson.content}}</p>
             <div>
                 <el-button type="text" @click="switchInput(true)" icon="el-icon-edit">添加评价</el-button>
+                <el-button v-show="inputSwitch" type="text" @click="switchInput(false)">隐藏</el-button>
+
             </div>
         </el-card>
         <el-card v-show="inputSwitch">
@@ -22,7 +24,6 @@
             <div style="padding: 10px 0">
                 <el-button type="primary" @click="postComment('commentForm')">提交</el-button>
                 <el-button type="primary" @click="this.$refs['commentForm'].resetFields()">清空</el-button>
-                <el-button type="text" @click="switchInput(false)">隐藏</el-button>
             </div>
         </el-card>
         <comment-list v-bind:comments="comments"></comment-list>
@@ -30,6 +31,7 @@
 </template>
 <script>
     import http from 'http'
+    import co from 'co'
     import commentComponent from '../components/comment-list.vue'
     export default{
         components:{
@@ -67,30 +69,32 @@
         methods:{
             fetchData(){
                 var url = `/api/comment/lesson/${this.lesson.uid}`;
-                http.getJson(url).then((res)=>{
-                    http.parseResp(res).then((result)=>{
-                        console.log(result);
-                        if(result&&result.length>0){
-                            this.comments = result;
-                        }
-                    },(err)=>{
-                        this.$message.error(err);
-                    })
-                }).catch((err)=>{
-                    console.log(err);
+                co(function *() {
+                    var result = yield http.getJson(url);
+                    return result;
+                }).then(result=>{
+                    if(result&&result.length>0){
+                        this.comments = result;
+                    }
+                },err=>{
+                    this.$message.error(err);
+                }).catch(err=>{
+                    this.$message.error(err);
                 })
             },
             postComment(){
                 var url = `/api/comment/${this.lesson.uid}`;
-                http.postJson(url,this.comment).then((resp)=>{
-                    http.parseResp(resp).then((result)=>{
-                        this.$message('评价成功');
-                        this.fetchData();
-                    },(err)=>{
-                        this.$message.error(err);
-                    })
-                }).catch((err)=>{
-                    console.log(err);
+                var comment = this.comment;
+                co(function *() {
+                    var result=  yield http.postJson(url,comment);
+                    return result;
+                }).then(result=>{
+                    this.$message('评价成功');
+                    this.fetchData();
+                },err=>{
+                    this.$message.error(err);
+                }).catch(err=>{
+                    this.$message.error(err);
                 })
             },
             switchInput(val){

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form :model="queryForm" ref="queryForm" :rules="formRules" :inline="true" style="text-align: left;padding: 5px;margin-left:15px;line-height: 36px;height: 36px" @submit.native.prevent>
+        <el-form :model="queryForm" ref="queryForm" :rules="formRules" :inline="true" style="text-align: left;padding: 5px;line-height: 36px;height: 36px" @submit.native.prevent>
             <el-form-item label="专业" prop="pro">
                 <el-input v-model="queryForm.pro" placeholder="请输入专业"></el-input>
             </el-form-item>
@@ -12,13 +12,13 @@
             </el-form-item>
             <el-button type="primary" @click="queryCourse('queryForm')">查询</el-button>
         </el-form>
-        <div style="height: 1px;background-color: #aebdc9;margin: 0 0 10px 0"></div>
-        <course-list v-bind:courses="this.courses"></course-list>
+        <course-list :courses="this.courses" :is-join="isJoin"></course-list>
     </div>
 </template>
 <script>
     import global  from 'global'
     import http from 'http'
+    import co from 'co'
     import periodComponent from '../components/period-input.vue'
     import courseListComponent from '../components/course-list.vue'
     export default{
@@ -59,6 +59,7 @@
                     cls:[{validator:checkCls,trigger:'blur'}],
                     period:[{validator:checkPeriod,trigger:'blur'}]
                 },
+                isJoin:true,
                 courses:[]
             }
         },
@@ -67,21 +68,22 @@
                 this.$refs[formName].validate((valid)=>{
                     if(valid){
                         var url = `/api/course/pro/${this.queryForm.pro}/cls/${this.queryForm.cls}/period/${this.queryForm.period}`;
-                        http.getJson(url).then((value)=>{
-                            http.parseResp(value).then((result)=>{
-                                this.courses = result;
-                            },(err)=>{
-                                this.$message.error(err);
-                            })
-                        }).catch((err)=>{
-                            console.log(err);
+                        co(function *() {
+                            var result = yield http.getJson(url);
+                            return result;
+                        }).then(result=>{
+                            this.courses = result;
+                        },err=>{
+                            this.$message.error(err);
+                        }).catch(err=>{
+                            this.$message.error(err);
                         })
                     }
                 })
             },
             periodSubmit(msg){
                 this.queryForm.period = msg;
-            },
+            }
         }
     }
 </script>

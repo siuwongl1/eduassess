@@ -9,6 +9,7 @@
 </template>
 <script>
     import http from 'http'
+    import co from 'co'
     import lessonComponent from '../components/lesson-list.vue'
     export default{
         data(){
@@ -29,16 +30,15 @@
         created(){
             this.isStudent=this.$store.state.user.type===1;
             var url = `/api/lesson/course/${this.cid}`;
-            http.getJson(url).then((value)=> {
-                http.parseResp(value).then((result)=>{
-                        this.lessons = result;
-                },(err)=>{
-                    this.$message.error(err);
-                })
-            },(err)=>{
+            co(function *() {
+                var result = yield http.getJson(url);
+                return result;
+            }).then(result=>{
+                this.lessons = result;
+            },err=>{
                 this.$message.error(err);
-            }).catch((err)=>{
-                console.log(err);
+            }).catch(err=>{
+                this.$message.error(err);
             })
         }
     }

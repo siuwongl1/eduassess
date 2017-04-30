@@ -7,6 +7,7 @@
 </template>
 <script>
     import http from 'http'
+    import co from 'co'
     import global from 'global'
     export default{
         data(){
@@ -17,14 +18,15 @@
         methods:{
             fetchData(){
                 var url =`/api/course/student/${this.$store.state.user.uid}/period/${global.getCurrentPeriod()}`;
-                http.getJson(url).then((value)=>{
-                    http.parseResp(value).then((result)=>{
-                        this.courses = result;
-                    },(err)=>{
-                        this.$message.error(err);
-                    })
-                }).catch((err)=>{
-                    console.log(err);
+                co(function *() {
+                    var result= yield http.getJson(url);
+                    return result;
+                }).then(result=>{
+                    this.courses = result;
+                },err=>{
+                    this.$message.error(err);
+                }).catch(err=>{
+                    this.$message.error(err);
                 })
             }
         },

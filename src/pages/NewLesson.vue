@@ -20,6 +20,7 @@
 </template>
 <script>
     import http from 'http'
+    import co from 'co'
     export default{
         data(){
             var checkName = (rule,value,cb)=>{
@@ -64,18 +65,21 @@
                 this.$refs[formName].validate((valid)=>{
                     if(valid){
                         this.loading =true;
+                        var lesson = this.lesson;
                         var url =`/api/lesson/${this.$route.params.cid}`;
-                        http.postJson(url,this.lesson).then((value)=>{
+                        co(function *() {
+                            var result= yield http.postJson(url,lesson);
+                            return result;
+                        }).then(result=>{
                             this.loading =false;
-                            http.parseResp(value).then((result)=>{
-                                this.$message('添加成功');
-                            },(err)=>{
-                                this.$message.error(err);
-                            })
-                        },(err)=>{
+                            this.$message('添加成功');
+                        },err=>{
                             this.loading =false;
-                            console.log(err);
-                        });
+                            this.$message.error(err);
+                        }).catch(err=>{
+                            this.loading =false;
+                            this.$message.error(err);
+                        })
                     }
                 })
             },

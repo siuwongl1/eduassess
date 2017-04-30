@@ -79,18 +79,27 @@
                     if(valid){
                         this.loading = true;
                         this.submited =true; //已提交该表单
+                        var pw =this.pw;
                         var url = `/api/user/pw/${this.$route.params.uid}`;
-                        http.putJson(url, this.pw).then((value) => {
-                            http.parseResp(value).then((json) => {
-                                this.$message(json.message);
-                            }, (err) => {
-                                this.$message.warning(err);
-                            });
+                        co(function *() {
+                            var result=  yield http.putJson(url, pw);
+                            return result;
+                        }).then(result=>{
+                            this.$alert('修改成功，请重新登录','提示',{
+                                confirmButtonText:'确定',
+                                callback:(action)=>{
+                                    this.$store.commit('removeUser');
+                                    this.$router.replace({name:'login'});
+                                }
+                            })
                             this.loading = false;
-                        }, (err) => {
-                            this.loading = false;
+                        },err=>{
                             this.$message.warning(err);
-                        });
+                            this.loading = false;
+                        }).catch(err=>{
+                            this.loading = false;
+                            this.$message.error(err);
+                        })
                     }
                 })
             },

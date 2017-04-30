@@ -21,6 +21,9 @@
                             </el-radio-group>
                         </el-form-item>
                         <el-button id="btn_login" type="primary" class="item-btn-login" @click="login('loginForm')">登录
+
+
+
                         </el-button>
                         <p class="item-p"><a class="item-p-link" href="#">无法登录？</a></p>
                     </el-form>
@@ -49,13 +52,17 @@
                             </el-radio-group>
                         </el-form-item>
                         <el-button type="primary" class="item-btn-login" @click="register('registerForm')">注册
+
+
+
                         </el-button>
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
         </el-card>
         <p style="text-align: center" class="footer">
-            ©️2017 <a href="http://www.zjut.edu.cn/" target="_blank">浙江工业大学 </a><span class="dot">·</span><a href="http://www.et.zjut.edu.cn/" target="_blank">教育科学与技术学院</a>
+            ©️2017 <a href="http://www.zjut.edu.cn/" target="_blank">浙江工业大学 </a><span class="dot">·</span><a
+                href="http://www.et.zjut.edu.cn/" target="_blank">教育科学与技术学院</a>
         </p>
     </div>
 
@@ -63,6 +70,7 @@
 <script>
     import http from 'http'
     import valid from 'valid'
+    import co from 'co'
     export default{
         data () {
             var checkUsername = (rule, value, callback) => {
@@ -101,7 +109,6 @@
                 labelPosition: 'right',
                 radio: 'student',
                 activeName: 'first',
-                type: 1,
                 loading: false,
                 loginForm: {
                     username: '',
@@ -131,31 +138,33 @@
             login: function (formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.loading = true;
                         var user = this.user;
-                        http.postJson('/api/user/login', user).then((value) => {
-                            http.parseResp(value).then((result) => {
-                                //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
-                                this.$store.commit('storeUser', {
-                                    username: this.loginForm.username,
-                                    uid: result._id,
-                                    name: result.name,
-                                    type: this.loginForm.type,
-                                    pro: result.pro,
-                                    cls: result.cls
-                                });
-                                this.$router.push({
-                                    path: '/index',
-                                    params: {name: this.loginForm.username, uid: result.data, type: this.loginForm.type}
-                                });
-                            }, (err) => {
-                                this.$message.warning(err);
-                            })
+                        this.loading = true;
+                        co(function *() {
+                            var result = yield http.postJson('/api/user/login', user);
+                            return result;
+                        }).then(result=>{
+                            //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
+                            this.$store.commit('storeUser', {
+                                username: this.loginForm.username,
+                                uid: result._id,
+                                name: result.name,
+                                type: this.loginForm.type,
+                                pro: result.pro,
+                                cls: result.cls
+                            });
+                            this.$router.push({
+                                name: 'index',
+                                params: {name: this.loginForm.username, uid: result._id, type: this.loginForm.type}
+                            });
                             this.loading = false;
-                        }, (err) => {
+                        },err=>{
                             this.$message.error(err);
                             this.loading = false;
-                        });
+                        }).catch(err=>{
+                            this.loading = false;
+                            this.$message.error(err);
+                        })
                     }
                 })
             },
@@ -164,33 +173,31 @@
                     if (valid) {
                         this.loading = true;
                         var user = this.user;
-                        http.postJson('/api/user', user).then((value) => {
-                            http.parseResp(value).then((result) => {
-                                //注册成功,跳转主界面
-                                this.$store.commit('storeUser', {
-                                    username: this.registerForm.username,
+                        co(function *() {
+                            var result = yield http.postJson('/api/user', user);
+                            return result;
+                        }).then(result=>{
+                            //注册成功,跳转主界面
+                            this.$store.commit('storeUser', {
+                                username: this.registerForm.username,
+                                uid: result._id,
+                                type: this.registerForm.type,
+                                name: ''
+                            });
+                            this.$router.push({
+                                name: 'index',
+                                params: {
+                                    name: this.registerForm.username,
                                     uid: result._id,
-                                    type: this.registerForm.type,
-                                    name: ''
-                                });
-                                this.$router.push({
-                                    name: 'index',
-                                    params: {
-                                        name: this.registerForm.username,
-                                        uid: result._id,
-                                        type: this.registerForm.type
-                                    }
-                                });
-                            }, (err) => {
-                                this.$message.warning(err);
-                            })
+                                    type: this.registerForm.type
+                                }
+                            });
+                        },err=>{
                             this.loading = false;
-                        }, (err) => {
-                            this.$message.warning(err);
+                            this.$message.error(err);
+                        }).catch(err=>{
                             this.loading = false;
-                        }).catch((err) => {
                             console.log(err);
-                            this.loading = false;
                         })
                     }
                 })
@@ -198,7 +205,7 @@
         },
         computed: {
             user: {
-                get: function() {
+                get() {
                     var user = new FormData();
                     if (this.activeName == 'first') {  //登录表单
                         user.append('uid', this.loginForm.username);

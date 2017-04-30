@@ -25,6 +25,7 @@
 <script>
     import http from 'http';
     import global from 'global';
+    import co from 'co';
     export default{
         data(){
             var checkName = (rule, value, cb) => {
@@ -84,23 +85,23 @@
         methods: {
             fetchData(){
                 var url =`/api/course/${this.$route.params.cid}`;
-                http.getJson(url).then((value)=>{
-                    http.parseResp(value).then((result)=>{
-                        if(result.length>0){
-                            var course = result[0];
-                            this.courseForm.name=  course.name;
-                            this.courseForm.pro=  course.pro;
-                            this.courseForm.cls=  course.cls;
-                            this.courseForm.period=  course.period;
-                        }
-                    },(err)=>{
-                        this.$message.error(err);
-                    })
-                },(err)=>{
+                co(function *() {
+                    var result = yield http.getJson(url);
+                    return result;
+                }).then(result=>{
+                    if(result.length>0){
+                        var course = result[0];
+                        this.courseForm.name=  course.name;
+                        this.courseForm.pro=  course.pro;
+                        this.courseForm.cls=  course.cls;
+                        this.courseForm.period=  course.period;
+                    }
+                },err=>{
                     this.$message.error(err);
-                }).catch((err)=>{
-                    console.log(err);
+                }).catch(err=>{
+                    this.$message.error(err);
                 })
+
             },
             onSubmit(formName){
                 if(this.$store.state.user.name===''){

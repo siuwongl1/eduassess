@@ -31,6 +31,7 @@
 </template>
 <script>
     import http from 'http'
+    import co from 'co'
     export default {
         data() {
             var checkPro = (rule, value, callback) => {
@@ -105,16 +106,19 @@
                         this.loading = true;
                         var url = `/api/user/${this.$store.state.user.uid}`;
                         this.submited = true;
-                        http.putJson(url, this.info).then((value) => {
+                        var info = this.info;
+                        co(function *() {
+                            var result= yield http.putJson(url, info);
+                            return result;
+                        }).then(result=>{
+                            this.$message('修改成功');
                             this.loading = false;
-                            http.parseResp(value).then((json) => {
-                                this.$message('修改成功');
-                            }, (err) => {
-                                this.$message.error(err);
-                            })
-                        }, (err) => {
+                        },err=>{
+                            this.$message.error(err);
                             this.loading = false;
-                            console.log(err);
+                        }).catch(err=>{
+                            this.loading = false;
+                            this.$message.error(err);
                         })
                     }
                 })
@@ -126,24 +130,25 @@
             fetchData: function () {
                 this.loading = true;
                 var url = `/api/user/${this.$store.state.user.uid}`;
-                http.getJson(url).then((value) => {
-                    http.parseResp(value).then((result) => {
-                        if (result.length>0) {
-                            var user = result[0];
-                            this.userForm.pro = user.pro;
-                            this.userForm.cls = user.cls;
-                            this.userForm.name = user.name;
-                            this.userForm.sex = user.sex == undefined ? 1 : Number.parseInt(user.sex);
-                            this.userForm.schoolId = user.schoolId;
-                        }
-                    }, (err) => {
-                        console.log(err);
-                    })
+                co(function *() {
+                    var result = yield http.getJson(url);
+                    return result;
+                }).then(result=>{
+                    if (result.length>0) {
+                        var user = result[0];
+                        this.userForm.pro = user.pro;
+                        this.userForm.cls = user.cls;
+                        this.userForm.name = user.name;
+                        this.userForm.sex = user.sex == undefined ? 1 : Number.parseInt(user.sex);
+                        this.userForm.schoolId = user.schoolId;
+                    }
                     this.loading = false;
-                }, (err) => {
+                },err=>{
+                    this.$message.error(err);
                     this.loading = false;
-                }).catch((err) => {
+                }).catch(err=>{
                     this.loading = false;
+                    this.$message.error(err);
                 })
             }
         },

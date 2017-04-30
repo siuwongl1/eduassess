@@ -8,11 +8,12 @@
                 <el-button type="primary" v-if="!isStudent" @click="addCourse">添加课程</el-button>
             </el-form-item>
         </el-form>
-        <course-list v-bind:courses="this.courses"></course-list>
+        <course-list :courses="courses" ></course-list>
     </div>
 </template>
 <script>
     import http from 'http';
+    import co from 'co'
     import global from 'global'
     import periodComponent from '../components/period-input.vue'
     import courseListComponent from '../components/course-list.vue'
@@ -20,8 +21,9 @@
         data() {
             return {
                 period: global.getCurrentPeriod(),
-                isStudent: this.$store.state.user.type === 1,
-                courses: []
+                isStudent: this.$store.state.user.type === '1',
+                isJoin:true,
+                courses: [],
             }
         },
         components: {
@@ -34,22 +36,22 @@
         methods: {
             fetchData () {
                 var url = `/api/course/${this.isStudent?'student':'teacher'}/${this.$store.state.user.uid}/period/${this.period}`;
-                http.getJson(url).then((value) => {
-                    http.parseResp(value).then((resp) => {
-                        this.courses = resp;
-                    }, (err) => {
-                        this.$message.error(err);
-                    })
-                }, (err) => {
-
-                }).catch((err) => {
-                    console.log(err);
+                co(function *() {
+                    var result = yield http.getJson(url);
+                    return result;
+                }).then(result=>{
+                    this.courses = result;
+                },err=>{
+                    this.$message.error(err);
+                }).catch(err=>{
+                    this.$message.error(err);
                 })
             },
             periodSubmit(msg){
                 this.period = msg;
             },
             queryCourse () {
+                console.log("asd"+this.params)
                 this.fetchData();
             },
             addCourse(){
@@ -57,11 +59,7 @@
             }
         },
         computed: {
-            filterBoxNumber: () => {
-                return this.courses.filter((course) => {
 
-                })
-            }
         }
     }
 </script>
