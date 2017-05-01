@@ -12,7 +12,7 @@
             </div>
         </el-card>
         <el-dialog title="评论内容" v-model="toggleSwitch">
-            <remark-list v-bind:remarks="remarks" v-on:submitRemark="submitRemark"></remark-list>
+            <remark-list v-bind:remarks="remarks" v-on:currentPage="currentPage" v-on:submitRemark="submitRemark"></remark-list>
         </el-dialog>
 
     </div>
@@ -33,6 +33,8 @@
                 comment:{}, //课堂评价列表
                 remarks:[], //评论列表
                 content:'',
+                skip:0,
+                limit:5,
             }
         },
         methods: {
@@ -93,7 +95,7 @@
             },
             fetchRemark(){
                 if(this.comment){
-                    var url =`/api/remark/${this.comment._id}`;
+                    var url =`/api/remark/${this.comment._id}/skip/${this.skip}/limit/${this.limit}`;
                     co(function *() {
                         var result = yield http.getJson(url);
                         return result;
@@ -102,6 +104,12 @@
                     }).catch(err=>{
                         this.$message.error(err);
                     })
+                }
+            },
+            currentPage(msg){
+                if(msg){
+                    this.skip=this.limit*(msg.size-1);
+                    this.fetchRemark();
                 }
             }
         },
