@@ -23,7 +23,7 @@
             </el-form>
             <div style="padding: 10px 0">
                 <el-button type="primary" @click="postComment('commentForm')">提交</el-button>
-                <el-button type="primary" @click="this.$refs['commentForm'].resetFields()">清空</el-button>
+                <el-button type="primary" @click="onReset('commentForm')">清空</el-button>
             </div>
         </el-card>
         <comment-list v-bind:comments="comments" v-on:update="update"></comment-list>
@@ -100,14 +100,18 @@
             switchInput(val){
                 this.inputSwitch =val;
             },
+            onReset(formName){
+                this.$refs[formName].resetFields();
+            },
             update(msg){
 //                if(msg){
 //                    if(!this.comments[msg.index].like){
 //                        this.comments[msg.index].like= new Array();
 //                    }
 //                    this.comments[msg.index].like.push(msg.metaData);
-//                    console.log(this.comments[msg.index]); //子组件变化时，通知父组件，从而改变父组件的props数据，但是为什么这里不起作用？
+//                    console.log(this.comments[msg.index]); //子组件变化时，通过从子组件来通知父组件，从而改变父组件的props数据，但是为什么这里不起作用？
 //                }
+                console.log('update');
                 this.fetchData();
             }
         },

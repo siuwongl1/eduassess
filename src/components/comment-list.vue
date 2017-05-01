@@ -6,20 +6,33 @@
             <div class="feed-header" v-if="c.like&&c.like.length&&c.like.length>0">
                 {{c.like.length}} 人赞同了该评价
             </div>
-            <div style="text-align: left">
-                <el-button type="text" icon="caret-top" @click="like(c,index)">{{c.like?c.like.length:0}}</el-button>
+            <div style="text-align: left;padding: 5px 0 0 0">
+                <el-button type="primary" size="mini" :plain="!isLiked(c)" icon="caret-top" @click="like(c,index)">{{c.like?c.like.length:0}}</el-button>
+                <el-button type="text" size="mini" :plain="true" icon="edit" @click="toggleRemark(c)">{{c.remarks?c.remarks.length:0}}条评论</el-button>
             </div>
         </el-card>
+        <el-dialog title="评论内容" v-model="toggleSwitch">
+            <remark-list v-bind:remarks="remarks" v-on:submitRemark="submitRemark"></remark-list>
+        </el-dialog>
+
     </div>
 </template>
 <script>
     import http from 'http'
     import co from 'co'
+    import remarkComponent from '../components/remark-list.vue'
     export default{
         props: ['comments'],
+        components:{
+            'remark-list': remarkComponent
+        },
         data(){
             return {
-                isActive:false
+                isActive:false,
+                toggleSwitch:false,
+                comment:{}, //课堂评价列表
+                remarks:[], //评论列表
+                content:'',
             }
         },
         methods: {
@@ -56,6 +69,40 @@
                     return false;
                 }
                 return false;
+            },
+            toggleRemark(c){
+                this.comment = c;
+                this.toggleSwitch = !this.toggleSwitch;
+                this.fetchRemark();
+            },
+            submitRemark(msg){ //添加评论
+                if(msg){
+                    this.content = msg.content;
+                    var url = `/api/remark/${this.comment._id}`;
+                    var content = this.remark;
+                    co(function *() {
+                        var result = yield http.postJson(url,content);
+                        return result;
+                    }).then(result=>{
+                        this.fetchRemark();
+                        this.$emit('update');
+                    }).catch(err=>{
+                        this.$message.error(err);
+                    })
+                }
+            },
+            fetchRemark(){
+                if(this.comment){
+                    var url =`/api/remark/${this.comment._id}`;
+                    co(function *() {
+                        var result = yield http.getJson(url);
+                        return result;
+                    }).then(result=>{
+                        this.remarks = result;
+                    }).catch(err=>{
+                        this.$message.error(err);
+                    })
+                }
             }
         },
         computed:{
@@ -65,6 +112,17 @@
                     var store = this.$store.state.user;
                     formData.append('name',store.name);
                     formData.append('uid',store.uid);
+                    return formData;
+                }
+            },
+            remark:{
+                get(){
+                    var formData = new FormData();
+                    var store = this.$store.state.user;
+                    formData.append('content',this.content);
+                    formData.append('cid',this.comment._id);
+                    formData.append('uid',store.uid);
+                    formData.append('name',store.name);
                     return formData;
                 }
             }
