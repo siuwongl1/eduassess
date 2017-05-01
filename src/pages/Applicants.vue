@@ -6,7 +6,7 @@
                 border
                 fix
                 tooltip-effect="dark"
-                style="width: 100%"
+                style="width: 615px;margin: 0 auto"
                 @selection-change="handleSelectionChange">
             <el-table-column
                 type="selection"

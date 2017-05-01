@@ -1,9 +1,9 @@
 <template>
     <div style="padding: 10px 0">
         <el-card v-for="(c,index) in comments" style="margin: 10px 0">
-            <div style="text-align: left">{{c.name}} 评论了该课堂：</div>
+            <div class="feed-header">{{c.name}} 评论了该课堂</div>
             <div style="margin: 10px">{{c.content}}</div>
-            <div style="text-align: left" v-if="c.like&&c.like.length&&c.like.length>0">
+            <div class="feed-header" v-if="c.like&&c.like.length&&c.like.length>0">
                 {{c.like.length}} 人赞同了该评价
             </div>
             <div style="text-align: left">
@@ -76,5 +76,10 @@
         background-color: #20A0FF;
         padding: 5px;
         color: white;
+    }
+    .feed-header{
+        text-align: left;
+        color: #999;
+        font-size: 13px;
     }
 </style>
