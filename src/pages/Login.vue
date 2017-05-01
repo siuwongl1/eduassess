@@ -144,19 +144,18 @@
                             var result = yield http.postJson('/api/user/login', user);
                             return result;
                         }).then(result=>{
-                            //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型
+                            //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型等状态信息
                             this.$store.commit('storeUser', {
-                                username: this.loginForm.username,
+                                username: result.username,
+                                type:result.type,
                                 uid: result._id,
                                 name: result.name,
-                                type: this.loginForm.type,
                                 pro: result.pro,
-                                cls: result.cls
+                                cls: result.cls,
+                                sex: result.sex,
+                                schoolId:result.schoolId
                             });
-                            this.$router.push({
-                                name: 'index',
-                                params: {name: this.loginForm.username, uid: result._id, type: this.loginForm.type}
-                            });
+                            this.$router.push({name: 'courseManage'});
                             this.loading = false;
                         },err=>{
                             this.$message.error(err);
@@ -179,19 +178,11 @@
                         }).then(result=>{
                             //注册成功,跳转主界面
                             this.$store.commit('storeUser', {
-                                username: this.registerForm.username,
+                                username: result.username,
                                 uid: result._id,
-                                type: this.registerForm.type,
-                                name: ''
+                                type: result.type,
                             });
-                            this.$router.push({
-                                name: 'index',
-                                params: {
-                                    name: this.registerForm.username,
-                                    uid: result._id,
-                                    type: this.registerForm.type
-                                }
-                            });
+                            this.$router.push({name: 'courseManage'});
                         },err=>{
                             this.loading = false;
                             this.$message.error(err);

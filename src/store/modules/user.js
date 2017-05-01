@@ -7,7 +7,9 @@ const state= {
     type: localStorage.getItem('type'),
     name: localStorage.getItem('name'),
     cls:localStorage.getItem('cls'),
-    pro:localStorage.getItem('pro')
+    pro:localStorage.getItem('pro'),
+    schoolId:localStorage.getItem('schoolId'),
+    sex:localStorage.getItem('sex'),
 }
 const mutations= {
     storeUser (state, payload) {
@@ -18,12 +20,16 @@ const mutations= {
         localStorage.setItem('name',payload.name);
         localStorage.setItem('cls',payload.cls);
         localStorage.setItem('pro',payload.pro);
+        localStorage.setItem('schoolId',payload.schoolId),
+        localStorage.setItem('sex',payload.sex);
         state.username = payload.username;
         state.type = payload.type;
         state.uid = payload.uid;
         state.name = payload.name;
         state.cls = payload.cls;
         state.pro = payload.pro;
+        state.schoolId = payload.schoolId;
+        state.sex = payload.sex;
     },
     removeUser(state){
         localStorage.clear();
@@ -33,6 +39,8 @@ const mutations= {
         state.name ='';
         state.cls= '';
         state.pro = '';
+        state.schoolId = '';
+        state.sex = '';
     }
 }
 export default {

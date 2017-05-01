@@ -54,8 +54,9 @@
                 </div>
                 <div class="divide-line" style="padding: 5px 10px">
                     <el-button type="text" v-if="!isJoin" class="button" @click="goLesson(c)">课堂</el-button>
-                    <el-button type="text" v-if="!isStudent" class="button" @click="modify(c)" style="margin-right: 10px">修改</el-button>
-                    <el-button type="text" v-if="isJoin" class="button" @click="join(c)" style="margin-right: 10px">加入该课程</el-button>
+                    <el-button type="text" v-if="!isStudent" class="button" @click="modify(c)">修改</el-button>
+                    <el-button type="text" v-if="isJoin" class="button" @click="join(c)" >加入该课程</el-button>
+                    <el-button type="text" v-if="!isStudent" class="button" @click="checkAll(c)" >申请列表</el-button>
                     <el-button type="text" v-if="type==='3'" @click="remove(c)" class="button">删除</el-button>
                     <div style="clear: both"></div>
                 </div>
@@ -78,11 +79,9 @@
             }
         },
         methods: {
-            goLesson(c) {
-                console.log(this.isJoin);
-//
-//                this.$store.commit('storeCourse',{cid:course._id}); //存储当前course状态
-//                this.$router.push({name:'lessonManage',params:{cid:course._id}});
+            goLesson(course) {
+                this.$store.commit('storeCourse',{cid:course._id}); //存储当前course状态
+                this.$router.push({name:'lessonManage',params:{cid:course._id}});
             },
             modify(course) {
                 this.$store.commit('storeCourse',{cid:course._id}); //存储当前course状态
@@ -95,25 +94,34 @@
                 var url = `/api/course/class/${course._id}`;
                 var user = this.user;
                 co(function *() {
-                    var result = yield http.putJson(url,user);
+                    var result = yield http.postJson(url,user);
                     return result;
                 }).then(result=>{
                     if(result.n==0){
-                        this.$message('您已经加入过该课程了哦');
+                        this.$message.warning('您已经加入过该课程了哦');
                     }else{
                         this.$message('加入成功');
                     }
                 }).catch(err=>{
                     this.$message.error(err);
                 })
+            },
+            checkAll(course){
+                this.$store.commit('storeCourse',{cid:course._id}); //存储当前course状态
+                this.$router.push({name:'applicants',params:{cid:course._id}});
             }
         },
         computed:{
             user:{
                 get:function () {
                     var formData = new FormData();
-                    formData.append("uid",this.$store.state.user.uid);
-                    formData.append("name",this.$store.state.user.name);
+                    var store = this.$store.state.user;
+                    formData.append("uid",store.uid);
+                    formData.append("name",store.name);
+                    formData.append("pro",store.pro);
+                    formData.append("cls",store.cls);
+                    formData.append("sex",store.sex==='1'?'男':'女');
+                    formData.append("schoolId",store.schoolId);
                     return formData;
                 }
             }

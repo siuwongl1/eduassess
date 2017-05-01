@@ -131,6 +131,7 @@
             },
             onReset(formName){
                 this.$refs[formName].resetFields();
+                this.courseForm.period = global.getCurrentPeriod();
             },
             putData(){
                 var url = `/api/course/${this.$route.params.cid}`;

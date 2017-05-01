@@ -15,9 +15,8 @@ import NewCourse from '../../pages/NewCourse.vue'
 import Lessons from '../../pages/Lessons.vue'
 import NewLesson from '../../pages/NewLesson.vue'
 import joinCourse from '../../pages/JoinClass.vue'
-import CourseSquare from '../../pages/CourseSquare.vue'
 import Lesson from '../../pages/Lesson.vue'
-
+import Applicants from '../../pages/Applicants.vue'
 
 // 引入状态管理
 import store from '../../store'
@@ -89,6 +88,13 @@ var LessonBeforeEnter =(to,from,next)=>{
     store.commit('storePath',path);
     next();
 }
+var ApplicantBeforeEnter = (to,from,next)=>{
+    var path = new Array();
+    path.push({path:'courses',name:'courseManage',label:'课程管理'});
+    path.push({name:'applicants',path:'applicants/:cid',label:'班级申请列表'});
+    store.commit('storePath',path);
+    next();
+}
 export default [{
     path: '/',
     component: App,
@@ -115,11 +121,12 @@ export default [{
                 {name:'newLesson',path:'newLesson/:cid',component:NewLesson,beforeEnter:NewLessonBeforeEnter}, //新课堂发布
                 {name:'joinCourse',path:'join',component:joinCourse,beforeEnter:JoinCourseBeforeEnter}, //加入班级
                 {name:'lesson',path:'lesson/:lid',component:Lesson,beforeEnter:LessonBeforeEnter},  //课堂详细信息
+                {name:'applicants',path:'applicants/:cid',component:Applicants,beforeEnter:ApplicantBeforeEnter},  //班级申请列表
             ]
         },
         {
             name:'none',
-            path: '*', // 其他页面
+            path: '*', // 其他页面 404
             redirect: '/login'
         }
     ]
