@@ -145,10 +145,10 @@
 
     .content {
         text-align: left;
-        padding: 10px;
+        padding: 10px 5px;
     }
     .content .label{
-        text-align: right;
+        text-align: left;
     }
     .content span{
         word-wrap: break-word;

@@ -49,7 +49,7 @@
 </script>
 <style>
     .remark-item {
-        border-bottom: 1px solid #999;
+        border-top: 1px solid #999;
         padding: 10px 0;
     }
 

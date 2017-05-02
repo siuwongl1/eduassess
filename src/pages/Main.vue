@@ -33,7 +33,7 @@
         data() {
             return {
                 activeIndex: '1',
-                isStudent: this.$store.state.user.type === '1',
+                isStudent: this.$store.state.user.type == '1',
                 messageBadge: 0,
             };
         },

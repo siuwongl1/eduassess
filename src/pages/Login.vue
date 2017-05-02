@@ -177,10 +177,11 @@
                             return result;
                         }).then(result=>{
                             //注册成功,跳转主界面
+                            this.loading =false;
                             this.$store.commit('storeUser', {
-                                username: result.username,
-                                uid: result._id,
-                                type: result.type,
+                                username: this.registerForm.username,
+                                uid: result.id,
+                                type: this.registerForm.type,
                             });
                             this.$router.push({name: 'courseManage'});
                         },err=>{
