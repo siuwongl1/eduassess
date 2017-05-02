@@ -181,7 +181,7 @@
                             this.$store.commit('storeUser', {
                                 username: this.registerForm.username,
                                 uid: result.id,
-                                type: this.registerForm.type,
+                                type: this.registerForm.type.toString(),
                             });
                             this.$router.push({name: 'courseManage'});
                         },err=>{
