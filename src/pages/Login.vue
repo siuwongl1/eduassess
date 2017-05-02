@@ -21,11 +21,9 @@
                             </el-radio-group>
                         </el-form-item>
                         <el-button id="btn_login" type="primary" class="item-btn-login" @click="login('loginForm')">登录
-
-
-
                         </el-button>
-                        <p class="item-p"><a class="item-p-link" href="#">无法登录？</a></p>
+                        <p class="item-p"><a class="item-p-link" @click="goRetrieve" href="javascript:void(0)">无法登录？</a>
+                        </p>
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="注册" name="second">
@@ -52,8 +50,6 @@
                             </el-radio-group>
                         </el-form-item>
                         <el-button type="primary" class="item-btn-login" @click="register('registerForm')">注册
-
-
 
                         </el-button>
                     </el-form>
@@ -135,7 +131,7 @@
             }
         },
         methods: {
-            login: function (formName) {
+            login(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         var user = this.user;
@@ -143,24 +139,24 @@
                         co(function *() {
                             var result = yield http.postJson('/api/user/login', user);
                             return result;
-                        }).then(result=>{
+                        }).then(result => {
                             //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型等状态信息
                             this.$store.commit('storeUser', {
                                 username: result.username,
-                                type:result.type,
+                                type: result.type,
                                 uid: result._id,
                                 name: result.name,
                                 pro: result.pro,
                                 cls: result.cls,
                                 sex: result.sex,
-                                schoolId:result.schoolId
+                                schoolId: result.schoolId
                             });
                             this.$router.push({name: 'courseManage'});
                             this.loading = false;
-                        },err=>{
+                        }, err => {
                             this.$message.error(err);
                             this.loading = false;
-                        }).catch(err=>{
+                        }).catch(err => {
                             this.loading = false;
                             this.$message.error(err);
                         })
@@ -175,24 +171,27 @@
                         co(function *() {
                             var result = yield http.postJson('/api/user', user);
                             return result;
-                        }).then(result=>{
+                        }).then(result => {
                             //注册成功,跳转主界面
-                            this.loading =false;
+                            this.loading = false;
                             this.$store.commit('storeUser', {
                                 username: this.registerForm.username,
                                 uid: result.id,
                                 type: this.registerForm.type.toString(),
                             });
                             this.$router.push({name: 'courseManage'});
-                        },err=>{
+                        }, err => {
                             this.loading = false;
                             this.$message.error(err);
-                        }).catch(err=>{
+                        }).catch(err => {
                             this.loading = false;
                             console.log(err);
                         })
                     }
                 })
+            },
+            goRetrieve(){
+                this.$router.push({name: 'retrieve'});
             }
         },
         computed: {
@@ -269,12 +268,5 @@
         padding: 10px;
         margin: 0 auto;
         width: 480px;
-    }
-
-    .app_content {
-        position: absolute;
-        top: 20%;
-        width: 100%;
-        text-align: center;
     }
 </style>

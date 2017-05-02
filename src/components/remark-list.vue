@@ -5,6 +5,13 @@
             <div>{{r.content}}</div>
             <p class="feed-date">{{r.lastRemarked}}</p>
         </div>
+        <el-pagination
+                small
+                :page-size="5"
+                layout="prev, pager, next"
+                @current-change="currentChange"
+                :total="remarks.count">
+        </el-pagination>
         <div style="margin: 10px 0">
             <el-input
                     type="textarea"
@@ -13,13 +20,6 @@
                     v-model="content">
             </el-input>
         </div>
-        <el-pagination
-                small
-                :page-size="5"
-                layout="prev, pager, next"
-                @current-change="currentChange"
-                :total="remarks.count">
-        </el-pagination>
         <div style="text-align: right;padding: 10px 0">
             <el-button type="text" size="small">取消</el-button>
             <el-button type="primary" @click="submitContent" size="small">提交</el-button>

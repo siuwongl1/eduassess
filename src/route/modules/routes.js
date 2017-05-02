@@ -6,6 +6,7 @@
  */
 
 import Login from '../../pages/Login.vue'  // 登录注册页面
+import Retrieve from '../../pages/RetrievePwd.vue' //找回密码
 import Main from '../../pages/Main.vue'    // 主页面
 import App from '../../App.vue'            //App负载页面
 import MPW from '../../pages/ModifyPw.vue' // 修改密码
@@ -104,6 +105,12 @@ export default [{
             path: '/login', // 登录
             meta: { requiresAuth: false },
             component: Login
+        },
+        {
+            name:'retrieve',
+            path:'retrieve',//找回密码
+            meta:{requiresAuth: false},
+            component: Retrieve
         },
         {
             name:'index',
