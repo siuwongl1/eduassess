@@ -4,7 +4,6 @@
             <el-menu-item v-if="isStudent" index="1">首页</el-menu-item>
             <el-menu-item v-else index="1">课程管理</el-menu-item>
             <el-menu-item index="3">我的消息
-
                 <el-badge class="mark" :value="messageBadge"/>
             </el-menu-item>
             <el-submenu index="2">
@@ -29,6 +28,7 @@
     </div>
 </template>
 <script>
+    import sockjs from 'sockjs'
     export default {
         data() {
             return {
@@ -39,6 +39,7 @@
         },
         methods: {
             handleSelect(key, keyPath) {
+                console.log(key);
                 if (key === '1') {  //评价课堂或学生首页
                     this.$router.push({
                         name: 'courseManage'
@@ -54,14 +55,14 @@
                 } else if (key === '2-3') { //消息
 
                 } else if (key === '2-4') { //我的动态
-
+                    this.$router.push({name: 'myActivity'})
                 } else if (key === '2-5') { //加入班级（学生）
                     this.$router.push({name: 'joinCourse'})
                 } else if (key === '2-6') { //退出
                     localStorage.clear();//清空本地数据
                     this.$router.replace({name: 'login'});
                 }
-            }
+            },
         },
         computed: {
             crumbs: {
@@ -69,6 +70,21 @@
                     return this.$store.state.crumb.paths;
                 }
             }
+        },
+        created(){
+            var sock = new SockJS('http://localhost:8080/echo');
+            sock.onopen = function() {
+                console.log('open');
+                sock.send('test');
+            };
+
+            sock.onmessage = function(e) {
+                console.log('message', e.data);
+                sock.close();
+            };
+            sock.onclose = function() {
+                console.log('close');
+            };
         }
     }
 </script>

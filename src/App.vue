@@ -1,10 +1,10 @@
 <template>
     <div>
         <router-view></router-view>
-
     </div>
 </template>
 <script>
+    import sockjs from 'sockjs'
     export default {
         data(){
             return {

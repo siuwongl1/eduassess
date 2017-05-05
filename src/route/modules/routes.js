@@ -18,6 +18,7 @@ import NewLesson from '../../pages/NewLesson.vue'
 import joinCourse from '../../pages/JoinClass.vue'
 import Lesson from '../../pages/Lesson.vue'
 import Applicants from '../../pages/Applicants.vue'
+import Activity  from '../../pages/MyActivity.vue'
 
 // 引入状态管理
 import store from '../../store'
@@ -96,6 +97,12 @@ var ApplicantBeforeEnter = (to,from,next)=>{
     store.commit('storePath',path);
     next();
 }
+var MyActivityBeforeEnter= (to,from,next)=>{
+    var path = new Array();
+    path.push({path:'activity',name:'myActivity',label:'我的动态'});
+    store.commit('storePath',path);
+    next();
+}
 export default [{
     path: '/',
     component: App,
@@ -129,10 +136,11 @@ export default [{
                 {name:'joinCourse',path:'join',component:joinCourse,beforeEnter:JoinCourseBeforeEnter}, //加入班级
                 {name:'lesson',path:'lesson/:lid',component:Lesson,beforeEnter:LessonBeforeEnter},  //课堂详细信息
                 {name:'applicants',path:'applicants/:cid',component:Applicants,beforeEnter:ApplicantBeforeEnter},  //班级申请列表
+                {name:'myActivity',path:'activity',component:Activity,beforeEnter:MyActivityBeforeEnter},  //班级申请列表
             ]
         },
         {
-            name:'none',
+            name:'page404',
             path: '*', // 其他页面 404
             redirect: '/login'
         }

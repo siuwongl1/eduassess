@@ -14,7 +14,7 @@
     export default{
         data(){
             return {
-                isStudent:this.$store.state.user.type===1,
+                isStudent:this.$store.state.user.type==='1',
                 lessons:[],
                 cid:this.$store.state.course.uid
             }
@@ -24,11 +24,10 @@
         },
         methods:{
             addLesson(){
-                this.$router.push({name:'newLesson',params:{cid:cid}});
+                this.$router.push({name:'newLesson',params:{cid:this.cid}});
             }
         },
         created(){
-            this.isStudent=this.$store.state.user.type===1;
             var url = `/api/lesson/course/${this.cid}`;
             co(function *() {
                 var result = yield http.getJson(url);

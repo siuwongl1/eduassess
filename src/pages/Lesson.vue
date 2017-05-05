@@ -6,7 +6,6 @@
             <div>
                 <el-button type="text" @click="switchInput(true)" icon="el-icon-edit">添加评价</el-button>
                 <el-button v-show="inputSwitch" type="text" @click="switchInput(false)">隐藏</el-button>
-
             </div>
         </el-card>
         <el-card v-show="inputSwitch">
