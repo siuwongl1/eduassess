@@ -29,6 +29,8 @@
 </template>
 <script>
     import sockjs from 'sockjs'
+    var Stomp = require('stompjs');
+
     export default {
         data() {
             return {
@@ -39,7 +41,7 @@
         },
         methods: {
             handleSelect(key, keyPath) {
-                console.log(key);
+                this.$store.commit('storeMenuKey',{key:key});
                 if (key === '1') {  //评价课堂或学生首页
                     this.$router.push({
                         name: 'courseManage'
@@ -63,6 +65,22 @@
                     this.$router.replace({name: 'login'});
                 }
             },
+            subscribeMessage(){
+                var sock = new SockJS('http://localhost:8080/echo');
+//                sock.onopen = function() {
+//                    console.log('open');
+//                    sock.send('test');
+//                };
+//                sock.onmessage = function(e) {
+//                    console.log('receive message :%s', e.data);
+//                    sock.close();
+//                };
+//                sock.onclose = function() {
+//                    console.log('close');
+//                };
+                Stomp.over(sock);
+            },
+
         },
         computed: {
             crumbs: {
@@ -72,19 +90,8 @@
             }
         },
         created(){
-            var sock = new SockJS('http://localhost:8080/echo');
-            sock.onopen = function() {
-                console.log('open');
-                sock.send('test');
-            };
-
-            sock.onmessage = function(e) {
-                console.log('message', e.data);
-                sock.close();
-            };
-            sock.onclose = function() {
-                console.log('close');
-            };
+            this.activeIndex = this.$store.state.menu.key|| '1';
+            this.subscribeMessage();
         }
     }
 </script>

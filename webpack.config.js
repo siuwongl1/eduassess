@@ -10,6 +10,9 @@ module.exports = (options = {}) => ({
     entry: {
         index: './src/main.js',
     },
+    node:{
+        net:'empty'
+    },
     output: {
         path: resolve(__dirname, 'dist'),
         filename: options.dev ? '[name].js' : '[name].js?[chunkhash]',
