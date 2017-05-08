@@ -1,22 +1,24 @@
 <template>
-    <el-card class="box-card" v-loading="loading"
-             element-loading-text="正在请求中……">
-        <el-form label-width="100px" :label-position="labelPosition" :rules="myrules"  :model="user" ref="user">
-            <el-form-item label="旧密码" prop="origin">
-                <el-input type="password" v-model="user.origin"></el-input>
-            </el-form-item>
-            <el-form-item label="新密码" prop="password">
-                <el-input type="password" v-model="user.password"></el-input>
-            </el-form-item>
-            <el-form-item label="确认密码" prop="retype">
-                <el-input type="password" v-model="user.retype"></el-input>
-            </el-form-item>
-            <div>
-                <el-button class="item-button" type="primary" @click="onSubmit('user')">确认修改</el-button>
-                <el-button class="item-button" type="primary" @click="onReset('user')">重置</el-button>
-            </div>
-        </el-form>
-    </el-card>
+    <div style="padding: 10px 0">
+        <el-card class="box-card" v-loading="loading"
+                 element-loading-text="正在请求中……">
+            <el-form label-width="100px" :label-position="labelPosition" :rules="myrules"  :model="user" ref="user">
+                <el-form-item label="旧密码" prop="origin">
+                    <el-input type="password" v-model="user.origin"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="password">
+                    <el-input type="password" v-model="user.password"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="retype">
+                    <el-input type="password" v-model="user.retype"></el-input>
+                </el-form-item>
+                <div>
+                    <el-button class="item-button" type="primary" @click="onSubmit('user')">确认修改</el-button>
+                    <el-button class="item-button" type="primary" @click="onReset('user')">重置</el-button>
+                </div>
+            </el-form>
+        </el-card>
+    </div>
 </template>
 <script>
     import "babel-polyfill";

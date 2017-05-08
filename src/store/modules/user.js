@@ -2,26 +2,26 @@
  * Created by SiuWongLi on 17/4/25.
  */
 const state= {
-    uid: localStorage.getItem('uid'),
-    username: localStorage.getItem('username'),
-    type: localStorage.getItem('type'),
-    name: localStorage.getItem('name'),
-    cls:localStorage.getItem('cls'),
-    pro:localStorage.getItem('pro'),
-    schoolId:localStorage.getItem('schoolId'),
-    sex:localStorage.getItem('sex'),
+    uid: sessionStorage.getItem('uid'),
+    username: sessionStorage.getItem('username'),
+    type: sessionStorage.getItem('type'),
+    name: sessionStorage.getItem('name'),
+    cls:sessionStorage.getItem('cls'),
+    pro:sessionStorage.getItem('pro'),
+    schoolId:sessionStorage.getItem('schoolId'),
+    sex:sessionStorage.getItem('sex'),
 }
 const mutations= {
     storeUser (state, payload) {
         // 使用localSorage 预防用户刷新浏览器时，用户信息丢失的问题
-        localStorage.setItem('uid',payload.uid||state.uid);
-        localStorage.setItem('type',payload.type||state.type);
-        localStorage.setItem('username',payload.username||state.username);
-        localStorage.setItem('name',payload.name||state.name);
-        localStorage.setItem('cls',payload.cls||state.cls);
-        localStorage.setItem('pro',payload.pro||state.pro);
-        localStorage.setItem('schoolId',payload.schoolId||state.schoolId),
-        localStorage.setItem('sex',payload.sex||state.sex);
+        sessionStorage.setItem('uid',payload.uid||state.uid);
+        sessionStorage.setItem('type',payload.type||state.type);
+        sessionStorage.setItem('username',payload.username||state.username);
+        sessionStorage.setItem('name',payload.name||state.name);
+        sessionStorage.setItem('cls',payload.cls||state.cls);
+        sessionStorage.setItem('pro',payload.pro||state.pro);
+        sessionStorage.setItem('schoolId',payload.schoolId||state.schoolId),
+        sessionStorage.setItem('sex',payload.sex||state.sex);
         state.username = payload.username||state.username;
         state.type = payload.type || state.type;
         state.uid = payload.uid ||state.uid;

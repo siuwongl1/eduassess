@@ -17,6 +17,7 @@
                             <span style="float: right">{{toDateString(n.date)}}</span>
                         </div>
                     </div>
+                    <div style="clear: both"></div>
                 </div>
             </div>
         </el-card>
@@ -38,11 +39,7 @@
             }
         },
         created(){
-            this.notices = this.$store.state.notice.data;
-            console.log(this.notices);
+            this.notices = this.$store.state.notice.data||[];
         }
     }
 </script>
-<style>
-
-</style>

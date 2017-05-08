@@ -1,5 +1,5 @@
 <template>
-    <div style="padding:20px">
+    <div style="padding:0 20px">
         <el-form :inline="true" class="course-form"
                  @submit.native.prevent>
             <el-form-item label="学期">

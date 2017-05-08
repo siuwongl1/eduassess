@@ -14,6 +14,7 @@
                 <el-menu-item index="2-5" v-if="isStudent">加入班级</el-menu-item>
                 <el-menu-item index="2-6">退出</el-menu-item>
             </el-submenu>
+            <el-menu-item v-if="this.$store.state.user.type==='3'" index="4">统计分析</el-menu-item>
         </el-menu>
         <el-card>
             当前位置：
@@ -22,7 +23,7 @@
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </el-card>
-        <div card class="center-content">
+        <div class="center-content">
             <router-view></router-view>
         </div>
     </div>
@@ -147,6 +148,7 @@
         position: absolute;
         width: 100%;
         height: 100%;
+        padding: 10px 0;
         text-align: center;
     }
 </style>
