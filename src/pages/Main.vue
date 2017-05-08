@@ -22,26 +22,30 @@
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </el-card>
-        <el-card class="center-content">
+        <div card class="center-content">
             <router-view></router-view>
-        </el-card>
+        </div>
     </div>
 </template>
 <script>
     import sockjs from 'sockjs'
-    var Stomp = require('stompjs');
-
+    import Stomp from 'stompjs'
+    import http from 'http'
+    import co from 'co'
     export default {
         data() {
             return {
                 activeIndex: '1',
                 isStudent: this.$store.state.user.type === '1',
                 messageBadge: 0,
+                stompClient:{},
+                notices:[],
+
             };
         },
         methods: {
             handleSelect(key, keyPath) {
-                this.$store.commit('storeMenuKey',{key:key});
+                this.$store.commit('storeMenuKey', {key: key});
                 if (key === '1') {  //评价课堂或学生首页
                     this.$router.push({
                         name: 'courseManage'
@@ -54,32 +58,73 @@
                     this.$router.push({
                         name: 'modifyPw'
                     })
-                } else if (key === '2-3') { //消息
-
+                } else if (key === '3') { //消息
+                    this.$router.push({
+                        name: 'notice'
+                    })
                 } else if (key === '2-4') { //我的动态
                     this.$router.push({name: 'myActivity'})
                 } else if (key === '2-5') { //加入班级（学生）
-                    this.$router.push({name: 'joinCourse'})
+                    var user = this.$store.state.user;
+                    var infoComplete = user.name||user.cls||user.pro||user.schoolId||false;
+                    if(!infoComplete){
+                        this.$alert('您的信息未完善，无法进行评价流程，请先去完善您的个人信息', '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {
+                                this.$router.push({name: 'userInfo'})
+                            }
+                        });
+                    }else{
+                        this.$router.push({name: 'joinCourse'})
+                    }
                 } else if (key === '2-6') { //退出
                     localStorage.clear();//清空本地数据
+                    if(this.stompClient){
+                        this.stompClient.disconnect();
+                    }
                     this.$router.replace({name: 'login'});
                 }
             },
             subscribeMessage(){
-                var sock = new SockJS('http://localhost:8080/echo');
-//                sock.onopen = function() {
-//                    console.log('open');
-//                    sock.send('test');
-//                };
-//                sock.onmessage = function(e) {
-//                    console.log('receive message :%s', e.data);
-//                    sock.close();
-//                };
-//                sock.onclose = function() {
-//                    console.log('close');
-//                };
-                Stomp.over(sock);
+                //消息订阅
+                if (location.search == '?ws') {
+                    this.stompClient = Stomp.client('ws://' + window.location.hostname + ':15674/ws');
+                } else {
+                    var ws = new SockJS('http://' + window.location.hostname + ':15674/stomp');
+                    this.stompClient = Stomp.over(ws);
+                }
+//                var destination = `/topic/message/${this.$store.state.user.username}`;
+                var destination = `/topic/${this.$store.state.user.uid}`;
+                this.stompClient.heartbeat.outgoing = 0;
+                this.stompClient.heartbeat.incoming = 0;
+                var that =this;
+                var on_connect = function() {
+                    that.stompClient.subscribe(destination, function(d) {
+                        var jsonObj = JSON.parse(d.body);
+                        that.notices.push(jsonObj);
+                        that.messageBadge  =that.notices.length;
+                        console.log(d.body);
+                    });
+                };
+                var on_error =  function() {
+                    console.log('error');
+                };
+                this.stompClient.connect('guest', 'guest', on_connect, on_error, '/');
             },
+            fetchNotice(){
+                var store = this.$store.state.user;
+                var url =`/api/notice/${store.uid}`;
+                co(function *() {
+                    var result = yield http.getJson(url);
+                    return result;
+                }).then(result=>{
+                    this.notices=result|| [];
+                    this.messageBadge  =this.notices.length;
+                    this.$store.commit('storeNotice',{data:this.notices});
+                }).catch(err=>{
+                    this.$message.error(err);
+                })
+            }
 
         },
         computed: {
@@ -90,8 +135,10 @@
             }
         },
         created(){
-            this.activeIndex = this.$store.state.menu.key|| '1';
+            this.activeIndex = this.$store.state.menu.key || '1';
             this.subscribeMessage();
+            this.fetchNotice();
+
         }
     }
 </script>

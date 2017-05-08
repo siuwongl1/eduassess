@@ -60,8 +60,9 @@
                     this.$message.error(err);
                 })
             },
-            currentChange(){
-
+            currentChange(size){
+                this.skip=this.limit*(size-1);
+                this.fetchData();
             },
             toDateString(val){
                 var date = new Date(val);

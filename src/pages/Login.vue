@@ -151,6 +151,7 @@
                                 sex: result.sex,
                                 schoolId: result.schoolId
                             });
+                            this.$store.commit('storeMenuKey',{key:'1'});
                             this.$router.push({name: 'courseManage'});
                             this.loading = false;
                         }, err => {
@@ -176,7 +177,7 @@
                             this.loading = false;
                             this.$store.commit('storeUser', {
                                 username: this.registerForm.username,
-                                uid: result.id,
+                                uid: result,
                                 type: this.registerForm.type.toString(),
                             });
                             this.$router.push({name: 'courseManage'});

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="padding: 20px">
         <el-form v-if="!isStudent" :inline="true" style="text-align: left;padding: 5px;line-height: 36px;height: 36px"
                  @submit.native.prevent>
             <el-button type="primary" @click="addLesson">添加课堂</el-button>

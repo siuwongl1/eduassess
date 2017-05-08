@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="padding:20px">
         <el-form :inline="true" class="course-form"
                  @submit.native.prevent>
             <el-form-item label="学期">
@@ -51,7 +51,6 @@
                 this.period = msg;
             },
             queryCourse () {
-                console.log("asd"+this.params)
                 this.fetchData();
             },
             addCourse(){

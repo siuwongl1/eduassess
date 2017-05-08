@@ -8,6 +8,7 @@ import crumb from './modules/crumb'  //面包屑状态
 import course from './modules/course' //课程状态
 import lesson from './modules/lesson' //课堂状态
 import menu from './modules/menu'  //菜单状态
+import notice from './modules/notice' //消息
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -17,6 +18,6 @@ export default new Vuex.Store({
         course:course,
         lesson:lesson,
         menu:menu,
-
+        notice:notice,
     },
 })

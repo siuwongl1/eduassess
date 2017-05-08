@@ -14,22 +14,22 @@ const state= {
 const mutations= {
     storeUser (state, payload) {
         // 使用localSorage 预防用户刷新浏览器时，用户信息丢失的问题
-        localStorage.setItem('uid',payload.uid);
-        localStorage.setItem('type',payload.type);
-        localStorage.setItem('username',payload.username);
-        localStorage.setItem('name',payload.name);
-        localStorage.setItem('cls',payload.cls);
-        localStorage.setItem('pro',payload.pro);
-        localStorage.setItem('schoolId',payload.schoolId),
-        localStorage.setItem('sex',payload.sex);
-        state.username = payload.username;
-        state.type = payload.type;
-        state.uid = payload.uid;
-        state.name = payload.name;
-        state.cls = payload.cls;
-        state.pro = payload.pro;
-        state.schoolId = payload.schoolId;
-        state.sex = payload.sex;
+        localStorage.setItem('uid',payload.uid||state.uid);
+        localStorage.setItem('type',payload.type||state.type);
+        localStorage.setItem('username',payload.username||state.username);
+        localStorage.setItem('name',payload.name||state.name);
+        localStorage.setItem('cls',payload.cls||state.cls);
+        localStorage.setItem('pro',payload.pro||state.pro);
+        localStorage.setItem('schoolId',payload.schoolId||state.schoolId),
+        localStorage.setItem('sex',payload.sex||state.sex);
+        state.username = payload.username||state.username;
+        state.type = payload.type || state.type;
+        state.uid = payload.uid ||state.uid;
+        state.name = payload.name|| state.name;
+        state.cls = payload.cls || state.cls;
+        state.pro = payload.pro || state.pro;
+        state.schoolId = payload.schoolId || state.schoolId;
+        state.sex = payload.sex || state.sex;
     },
     removeUser(state){
         localStorage.clear();

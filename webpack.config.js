@@ -11,7 +11,8 @@ module.exports = (options = {}) => ({
         index: './src/main.js',
     },
     node:{
-        net:'empty'
+        net:'empty',
+        tls:'empty',
     },
     output: {
         path: resolve(__dirname, 'dist'),

@@ -111,6 +111,10 @@
                             var result= yield http.putJson(url, info);
                             return result;
                         }).then(result=>{
+                            var user = this.userForm;
+                            console.log(user);
+                            user.sex +='';
+                            this.$store.commit('storeUser',user);
                             this.$message('修改成功');
                             this.loading = false;
                         },err=>{

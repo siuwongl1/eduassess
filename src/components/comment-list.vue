@@ -14,7 +14,6 @@
         <el-dialog title="评论内容" v-model="toggleSwitch">
             <remark-list v-bind:remarks="remarks" v-on:currentPage="currentPage" v-on:submitRemark="submitRemark"></remark-list>
         </el-dialog>
-
     </div>
 </template>
 <script>
@@ -38,7 +37,8 @@
             }
         },
         methods: {
-            like(c,index){
+            like(c,index){  //
+                this.comment = c;
                 if(this.isLiked(c)){
                     this.$message('您已对该评论内容点赞过了哦');
                     return;
@@ -118,8 +118,11 @@
                 get(){
                     var formData = new FormData();
                     var store = this.$store.state.user;
-                    formData.append('name',store.name);
-                    formData.append('uid',store.uid);
+                    formData.append('name',store.name); //点赞人姓名
+                    formData.append('originUid',this.comment.uid); //评价人uid
+                    formData.append('content',this.comment.content); //评价内容
+                    formData.append('lid',this.comment.lid); //课堂uid
+                    formData.append('uid',store.uid); //点赞人uid
                     return formData;
                 }
             },
@@ -127,10 +130,11 @@
                 get(){
                     var formData = new FormData();
                     var store = this.$store.state.user;
-                    formData.append('content',this.content);
-                    formData.append('cid',this.comment._id);
-                    formData.append('uid',store.uid);
-                    formData.append('name',store.name);
+                    formData.append('content',this.content); //评论内容
+                    formData.append('originUid',this.comment.uid); //评价人uid
+                    formData.append('lid',this.comment.lid); //课堂uid
+                    formData.append('uid',store.uid); //评论人uid
+                    formData.append('name',store.name); //评论人姓名
                     return formData;
                 }
             }

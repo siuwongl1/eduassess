@@ -3,9 +3,9 @@
         <div class="remark-item" v-for="(r,index) in remarks.data">
             <p class="feed-item">{{r.name}}</p>
             <div>{{r.content}}</div>
-            <p class="feed-date">{{r.lastRemarked}}</p>
+            <p class="feed-date">{{toDateString(r.lastRemarked)}}</p>
         </div>
-        <el-pagination
+        <el-pagination v-if="remarks.count>0"
                 small
                 :page-size="5"
                 layout="prev, pager, next"
@@ -43,13 +43,16 @@
             },
             currentChange(size){
                 this.$emit('currentPage',{size:size});
+            },
+            toDateString(val){
+                var date = new Date(val);
+                return date.toLocaleString();
             }
         }
     }
 </script>
 <style>
     .remark-item {
-        border-top: 1px solid #999;
         padding: 10px 0;
     }
 

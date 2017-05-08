@@ -19,6 +19,8 @@ import joinCourse from '../../pages/JoinClass.vue'
 import Lesson from '../../pages/Lesson.vue'
 import Applicants from '../../pages/Applicants.vue'
 import Activity  from '../../pages/MyActivity.vue'
+import Notice from '../../pages/Notices.vue'
+
 
 // 引入状态管理
 import store from '../../store'
@@ -103,6 +105,12 @@ var MyActivityBeforeEnter= (to,from,next)=>{
     store.commit('storePath',path);
     next();
 }
+var NoticeBeforeEnter= (to,from,next)=>{
+    var path = new Array();
+    path.push({path:'notice',name:'notice',label:'我的消息'});
+    store.commit('storePath',path);
+    next();
+}
 export default [{
     path: '/',
     component: App,
@@ -137,6 +145,8 @@ export default [{
                 {name:'lesson',path:'lesson/:lid',component:Lesson,beforeEnter:LessonBeforeEnter},  //课堂详细信息
                 {name:'applicants',path:'applicants/:cid',component:Applicants,beforeEnter:ApplicantBeforeEnter},  //班级申请列表
                 {name:'myActivity',path:'activity',component:Activity,beforeEnter:MyActivityBeforeEnter},  //班级申请列表
+                {name:'notice',path:'notice',component:Notice,beforeEnter:NoticeBeforeEnter},  //我的消息
+
             ]
         },
         {

@@ -1,7 +1,7 @@
 <template>
     <el-row>
-        <el-col :span="5" v-for="(c,index) in courses" :offset="index%4==0?0:1">
-            <el-card :body-style="{padding:'0px'}">
+        <el-col style="width: 300px" :span="5" v-for="(c,index) in courses" :offset="index%3==0?0:1">
+            <el-card  :body-style="{padding:'0px'}">
                 <div class="content">
                     <el-row>
                         <el-col :span="leftSpan" class="label">
@@ -40,7 +40,7 @@
                             发布时间：
                         </el-col>
                         <el-col :span="rightSpan">
-                            <span>{{c.date}}</span>
+                            <span>{{toLocaleDateString(c.date)}}</span>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -109,6 +109,10 @@
             checkAll(course){
                 this.$store.commit('storeCourse',{cid:course._id}); //存储当前course状态
                 this.$router.push({name:'applicants',params:{cid:course._id}});
+            },
+            toLocaleDateString(val){
+                var date = new Date(val);
+                return date.toLocaleString();
             }
         },
         computed:{

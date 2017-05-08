@@ -6,7 +6,7 @@
                 border
                 fix
                 tooltip-effect="dark"
-                style="width: 615px;margin: 0 auto"
+                style="width: 845px;margin: 0 auto"
                 @selection-change="handleSelectionChange">
             <el-table-column
                 type="selection"
@@ -15,7 +15,7 @@
             <el-table-column
                 prop="schoolId"
                 label="学号"
-                width="120">
+                width="200">
             </el-table-column>
             <el-table-column
                 label="姓名"
@@ -30,7 +30,19 @@
             <el-table-column
                 prop="pro"
                 label="专业"
-                width="200">
+                width="250">
+            </el-table-column>
+            <el-table-column
+                    prop="type"
+                    label="状态"
+                    width="100"
+                    :filters="[{ text: '已同意', value: 1 }, { text: '未处理', value: 0 }]"
+                    :filter-method="filterTag">
+                <template scope="scope">
+                    <el-tag
+                            :type="scope.row.type === 0 ? 'primary' : 'success'"
+                            close-transition>{{formatTag(scope.row.type)}}</el-tag>
+                </template>
             </el-table-column>
         </el-table>
         <div style="margin-top: 20px">
@@ -86,10 +98,20 @@
                     var result = yield http.getJson(url);
                     return result;
                 }).then(result => {
-                    this.applicant = result;
+                    this.applicant = result||[];
                 }).catch(err => {
                     this.$message.error(err);
                 })
+            },
+            filterTag(value, row){
+                return row.type === value;
+            },
+            formatTag(type){
+                if(type===1){
+                    return '已同意';
+                }else{
+                    return '未处理';
+                }
             }
         },
         computed: {
