@@ -90,10 +90,18 @@
                 }).then(result=>{
                     this.$message('评价成功');
                     this.fetchData();
-                },err=>{
-                    this.$message.error(err);
+                }, err => {
+                    if(err && typeof err ==='object' &&err.statusCode){
+                        if(err.statusCode===1){
+                            this.$message.error(err.message);
+                        }else if(err.statusCode===401){
+                            this.$router.replace({name:'login'});
+                        }
+                    }else{
+                        this.$message.error(err);
+                    }
                 }).catch(err=>{
-                    this.$message.error(err);
+                    console.log(err);
                 })
             },
             switchInput(val){
@@ -103,14 +111,6 @@
                 this.$refs[formName].resetFields();
             },
             update(msg){
-//                if(msg){
-//                    if(!this.comments[msg.index].like){
-//                        this.comments[msg.index].like= new Array();
-//                    }
-//                    this.comments[msg.index].like.push(msg.metaData);
-//                    console.log(this.comments[msg.index]); //子组件变化时，通过从子组件来通知父组件，从而改变父组件的props数据，但是为什么这里不起作用？
-//                }
-                console.log('update');
                 this.fetchData();
             }
         },
@@ -118,9 +118,10 @@
             comment:{
                 get(){
                     var formData = new FormData();
-                    formData.append('content',this.commentForm.content);
-                    formData.append('name',this.$store.state.user.name);
-                    formData.append('uid',this.$store.state.user.uid);
+                    formData.append('content',this.commentForm.content); //评价内容
+                    formData.append('name',this.$store.state.user.name); //用户名称
+                    formData.append('uid',this.$store.state.user.uid); //用户id
+                    formData.append('cid',this.$store.state.course.uid); //课程id
                     return formData;
                 }
             }

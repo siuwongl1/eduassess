@@ -14,7 +14,7 @@
 <script>
     import http from 'http';
     import co from 'co'
-    import global from 'global'
+    import global from 'common'
     import periodComponent from '../components/period-input.vue'
     import courseListComponent from '../components/course-list.vue'
     export default {
@@ -41,10 +41,18 @@
                     return result;
                 }).then(result=>{
                     this.courses = result;
-                },err=>{
-                    this.$message.error(err);
+                }, err => {
+                    if(err && typeof err ==='object' &&err.statusCode){
+                        if(err.statusCode===1){
+                            this.$message.error(err.message);
+                        }else if(err.statusCode===401){
+                            this.$router.replace({name:'login'});
+                        }
+                    }else{
+                        this.$message.error(err);
+                    }
                 }).catch(err=>{
-                    this.$message.error(err);
+                    console.log(err)
                 })
             },
             periodSubmit(msg){

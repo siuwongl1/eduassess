@@ -112,14 +112,21 @@
                             return result;
                         }).then(result=>{
                             var user = this.userForm;
-                            console.log(user);
-                            user.sex +='';
+                            user.sex = user.sex.toString();
                             this.$store.commit('storeUser',user);
                             this.$message('修改成功');
                             this.loading = false;
-                        },err=>{
-                            this.$message.error(err);
+                        }, err => {
                             this.loading = false;
+                            if(err && typeof err ==='object' &&err.statusCode){
+                                if(err.statusCode===1){
+                                    this.$message.error(err.message);
+                                }else if(err.statusCode===401){
+                                    this.$router.replace({name:'login'});
+                                }
+                            }else{
+                                this.$message.error(err);
+                            }
                         }).catch(err=>{
                             this.loading = false;
                             this.$message.error(err);
@@ -160,7 +167,9 @@
             info: {
                 get: function () {
                     var formData = new FormData();
-                    formData.append('cls', this.userForm.cls);
+                    if(this.isStudent){
+                        formData.append('cls', this.userForm.cls);
+                    }
                     formData.append('sex', this.userForm.sex);
                     formData.append('pro', this.userForm.pro);
                     formData.append('name', this.userForm.name);

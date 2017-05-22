@@ -73,9 +73,17 @@
                         }).then(result=>{
                             this.loading =false;
                             this.$message('添加成功');
-                        },err=>{
-                            this.loading =false;
-                            this.$message.error(err);
+                        }, err => {
+                            this.loading = false;
+                            if(err && typeof err ==='object' &&err.statusCode){
+                                if(err.statusCode===1){
+                                    this.$message.error(err.message);
+                                }else if(err.statusCode===401){
+                                    this.$router.replace({name:'login'});
+                                }
+                            }else{
+                                this.$message.error(err);
+                            }
                         }).catch(err=>{
                             this.loading =false;
                             this.$message.error(err);

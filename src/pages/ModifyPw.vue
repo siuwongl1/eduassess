@@ -95,12 +95,20 @@
                                 }
                             })
                             this.loading = false;
-                        },err=>{
-                            this.$message.warning(err);
+                        }, err => {
                             this.loading = false;
+                            if(err && typeof err ==='object' &&err.statusCode){
+                                if(err.statusCode===1){
+                                    this.$message.error(err.message);
+                                }else if(err.statusCode===401){
+                                    this.$router.replace({name:'login'});
+                                }
+                            }else{
+                                this.$message.error(err);
+                            }
                         }).catch(err=>{
-                            this.loading = false;
-                            this.$message.error(err);
+
+                            console.log(err);
                         })
                     }
                 })

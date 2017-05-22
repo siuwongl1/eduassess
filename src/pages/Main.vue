@@ -14,7 +14,8 @@
                 <el-menu-item index="2-5" v-if="isStudent">加入班级</el-menu-item>
                 <el-menu-item index="2-6">退出</el-menu-item>
             </el-submenu>
-            <el-menu-item v-if="this.$store.state.user.type==='3'" index="4">统计分析</el-menu-item>
+            <!--<el-menu-item v-if="this.$store.state.user.type==='3'" index="4">统计分析</el-menu-item>-->
+            <el-menu-item index="4">统计分析</el-menu-item>
         </el-menu>
         <el-card>
             当前位置：
@@ -63,6 +64,8 @@
                     this.$router.push({
                         name: 'notice'
                     })
+                }else if(key==='4'){ //统计分析
+                    this.$router.push({name:'statisic'});
                 } else if (key === '2-4') { //我的动态
                     this.$router.push({name: 'myActivity'})
                 } else if (key === '2-5') { //加入班级（学生）
@@ -94,7 +97,6 @@
                     var ws = new SockJS('http://' + window.location.hostname + ':15674/stomp');
                     this.stompClient = Stomp.over(ws);
                 }
-//                var destination = `/topic/message/${this.$store.state.user.username}`;
                 var destination = `/topic/${this.$store.state.user.uid}`;
                 this.stompClient.heartbeat.outgoing = 0;
                 this.stompClient.heartbeat.incoming = 0;
@@ -110,6 +112,7 @@
                 var on_error =  function() {
                     console.log('error');
                 };
+                this.$store.commit('storeStompClient',{client:this.stompClient});
                 this.stompClient.connect('guest', 'guest', on_connect, on_error, '/');
             },
             fetchNotice(){
@@ -122,8 +125,26 @@
                     this.notices=result|| [];
                     this.messageBadge  =this.notices.length;
                     this.$store.commit('storeNotice',{data:this.notices});
+                }, err => {
+                    if(err && typeof err ==='object' &&err.statusCode){
+                        if(err.statusCode===1){
+                            this.$message.error(err.message);
+                        }else if(err.statusCode===401){
+                            this.$router.replace({name:'login'});
+                        }
+                    }else{
+                        this.$message.error(err);
+                    }
                 }).catch(err=>{
-                    this.$message.error(err);
+                    if(err && typeof err ==='object' &&err.statusCode){
+                        if(err.statusCode===1){
+                            this.$message.error(err.message);
+                        }else if(err.statusCode===401){
+                            this.$router.replace({name:'login'});
+                        }
+                    }else{
+                        this.$message.error(err);
+                    }
                 })
             }
 

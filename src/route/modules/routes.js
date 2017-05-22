@@ -4,7 +4,7 @@
  * 2017-04-26 14:24:35
  * 此部分代码硬编码太多,变化太多，有bad code 的味道，后面作项目整理时一齐整理
  */
-
+import NotFound from '../../pages/NotFound404.vue'  //404
 import Login from '../../pages/Login.vue'  // 登录注册页面
 import Retrieve from '../../pages/RetrievePwd.vue' //找回密码
 import Main from '../../pages/Main.vue'    // 主页面
@@ -20,26 +20,27 @@ import Lesson from '../../pages/Lesson.vue'
 import Applicants from '../../pages/Applicants.vue'
 import Activity  from '../../pages/MyActivity.vue'
 import Notice from '../../pages/Notices.vue'
-
+import Statistic from '../../pages/Statistics.vue'
+import UserDedail from '../../pages/UserDetail.vue'
 
 // 引入状态管理
 import store from '../../store'
-var isStudent = store.state.user.type===1;
+var isStudent = store.state.user.type==='1';
 var CourseBeforeEnter =(to,from,next)=>{
     var path = new Array();
-    path.push({path:'courses',name:'courseManage',label:`${this.isStudent?'首页':'课程管理'}`});
+    path.push({path:to.path,name:to.name,label:`${isStudent?'首页':'课程管理'}`});
     store.commit('storePath',path);
     next();
 }
 var MPWBeforeEnter = (to,from,next)=>{
     var path = new Array();
-    path.push({path:'modifyPw',name:'modifyPw',label:'修改密码'});
+    path.push({path:to.path,name:to.name,label:'修改密码'});
     store.commit('storePath',path);
     next();
 }
 var UserInfoBeforeEnter = (to,from,next)=>{
     var path = new Array();
-    path.push({path:'userInfo',name:'userInfo',label:'个人信息'});
+    path.push({path:to.path,name:to.name,label:'个人信息'});
     store.commit('storePath',path);
     next();
 }
@@ -59,7 +60,11 @@ var NewCourseBeforeEnter = (to,from,next)=>{
 }
 var LessonManageBeforeEnter = (to,from,next)=>{
     var path = new Array();
-    path.push({path:'courses',name:'courseManage',label:'课程管理'});
+    if(isStudent){
+        path.push({path:'courses',name:'courseManage',label:'首页'});
+    }else{
+        path.push({path:'courses',name:'courseManage',label:'课程管理'});
+    }
     path.push({path:'lessons/:cid',name:'lessonManage',label:'课堂管理'});
     store.commit('storePath',path);
     next();
@@ -83,12 +88,24 @@ var LessonBeforeEnter =(to,from,next)=>{
     var path = new Array();
     if(isStudent){
         path.push({path:'courses',name:'courseManage',label:'首页'});
-        path.push({path:'lesson/:lid',name:'lesson',label:'课堂详情'});
+    }else{
+        path.push({path:'courses',name:'courseManage',label:'课程管理'});
+    }
+    path.push({path:'lessons/:cid',name:'lessonManage',label:'课堂管理'});
+    path.push({path:'lesson/:lid',name:'lesson',label:'课堂详情'});
+    store.commit('storePath',path);
+    next();
+}
+var UserDetailBeforeEnter =(to,from,next)=>{
+    var path = new Array();
+    if(isStudent){
+        path.push({path:'courses',name:'courseManage',label:'首页'});
     }else{
         path.push({path:'courses',name:'courseManage',label:'课程管理'});
         path.push({path:'lessons/:cid',name:'lessonManage',label:'课堂管理'});
-        path.push({path:'lesson/:lid',name:'lesson',label:'课堂详情'});
     }
+    path.push({path:'lesson/:lid',name:'lesson',label:'课堂详情'});
+    path.push({path:'detail/:uid',name:'userdetail',label:'用户详情'});
     store.commit('storePath',path);
     next();
 }
@@ -108,6 +125,12 @@ var MyActivityBeforeEnter= (to,from,next)=>{
 var NoticeBeforeEnter= (to,from,next)=>{
     var path = new Array();
     path.push({path:'notice',name:'notice',label:'我的消息'});
+    store.commit('storePath',path);
+    next();
+}
+var StatisticBeforeEnter= (to,from,next)=>{
+    var path = new Array();
+    path.push({path:'statistic',name:'statistic',label:'统计分析'});
     store.commit('storePath',path);
     next();
 }
@@ -146,13 +169,20 @@ export default [{
                 {name:'applicants',path:'applicants/:cid',component:Applicants,beforeEnter:ApplicantBeforeEnter},  //班级申请列表
                 {name:'myActivity',path:'activity',component:Activity,beforeEnter:MyActivityBeforeEnter},  //班级申请列表
                 {name:'notice',path:'notice',component:Notice,beforeEnter:NoticeBeforeEnter},  //我的消息
-
+                {name:'statisic',path:'statisic',component:Statistic,beforeEnter:StatisticBeforeEnter},  //统计分析
+                {name:'userdetail',path:'detail/:uid',component:UserDedail,beforeEnter:UserDetailBeforeEnter},  //统计分析
             ]
         },
         {
-            name:'page404',
-            path: '*', // 其他页面 404
+            name:'notfound',
+            path: '*', // 其他页面
             redirect: '/login'
-        }
+        },
+        // {
+        //     name:'notfound',
+        //     path:'/404',
+        //     meta: { requiresAuth: false },
+        //     component:NotFound
+        // }
     ]
 }]

@@ -24,7 +24,7 @@
 </template>
 <script>
     import http from 'http';
-    import global from 'global';
+    import global from 'common';
     import co from 'co';
     export default{
         data(){
@@ -135,17 +135,23 @@
             },
             putData(){
                 var url = `/api/course/${this.$route.params.cid}`;
-                http.putJson(url,this.course).then((value)=>{
+                co(function *() {
+                    var result = yield http.putJson(url,this.course);
+                    return result;
+                }).then((result)=>{
                     this.loading = false;
                     this.submited =true;
-                    http.parseResp(value).then((json)=>{
-                        this.$message('修改成功！');
-                    },(err)=>{
-                        this.$message.error(err);
-                    })
-                },(err)=>{
+                }, err => {
                     this.loading = false;
-                    this.$message.error(err);
+                    if(err && typeof err ==='object' &&err.statusCode){
+                        if(err.statusCode===1){
+                            this.$message.error(err.message);
+                        }else if(err.statusCode===401){
+                            this.$router.replace({name:'login'});
+                        }
+                    }else{
+                        this.$message.error(err);
+                    }
                 }).catch((err)=>{
                     this.loading = false;
                     console.log(err);
@@ -153,17 +159,23 @@
             },
             postData(){
                 var url = '/api/course';
-                http.postJson(url,this.course).then((value)=>{
+                co(function *() {
+                    var result= yield http.postJson(url,this.course);
+                    return result;
+                }).then((value)=>{
                     this.loading = false;
                     this.submited =true;
-                    http.parseResp(value).then((json)=>{
-                        this.$message('添加成功！');
-                    },(err)=>{
-                        this.$message.error(err);
-                    })
                 },(err)=>{
                     this.loading = false;
-                    this.$message.error(err);
+                    if(err && typeof err ==='object' &&err.statusCode){
+                        if(err.statusCode===1){
+                            this.$message.error(err.message);
+                        }else if(err.statusCode===401){
+                            this.$router.replace({name:'login'});
+                        }
+                    }else{
+                        this.$message.error(err);
+                    }
                 }).catch((err)=>{
                     this.loading = false;
                     console.log(err);

@@ -67,6 +67,7 @@
     import http from 'http'
     import valid from 'valid'
     import co from 'co'
+
     export default{
         data () {
             var checkUsername = (rule, value, callback) => {
@@ -140,6 +141,7 @@
                             var result = yield http.postJson('/api/user/login', user);
                             return result;
                         }).then(result => {
+                            http.saveToken(result.token);
                             //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型等状态信息
                             this.$store.commit('storeUser', {
                                 username: result.username,
@@ -154,12 +156,17 @@
                             this.$store.commit('storeMenuKey',{key:'1'});
                             this.$router.push({name: 'courseManage'});
                             this.loading = false;
-                        }, err => {
-                            this.$message.error(err);
-                            this.loading = false;
                         }).catch(err => {
                             this.loading = false;
-                            this.$message.error(err);
+                            if(err && typeof err ==='object' &&err.statusCode){
+                                if(err.statusCode===1){
+                                    this.$message.error(err.message);
+                                }else if(err.statusCode===401){
+                                    this.$router.replace({name:'login'});
+                                }
+                            }else{
+                                this.$message.error(err);
+                            }
                         })
                     }
                 })
@@ -177,13 +184,21 @@
                             this.loading = false;
                             this.$store.commit('storeUser', {
                                 username: this.registerForm.username,
-                                uid: result,
+                                uid: result.id,
                                 type: this.registerForm.type.toString(),
                             });
                             this.$router.push({name: 'courseManage'});
                         }, err => {
                             this.loading = false;
-                            this.$message.error(err);
+                            if(err && typeof err ==='object' &&err.statusCode){
+                                if(err.statusCode===1){
+                                    this.$message.error(err.message);
+                                }else if(err.statusCode===401){
+                                    this.$router.replace({name:'login'});
+                                }
+                            }else{
+                                this.$message.error(err);
+                            }
                         }).catch(err => {
                             this.loading = false;
                             console.log(err);
@@ -211,6 +226,12 @@
                     }
                     return user;
                 }
+            }
+        },
+        created(){
+            var stompClient = this.$store.state.notice.client;
+            if(stompClient &&  typeof  stompClient.disconnect  ==='function'){
+                stompClient.disconnect();
             }
         }
     }

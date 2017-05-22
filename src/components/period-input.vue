@@ -8,7 +8,7 @@
     ></el-autocomplete>
 </template>
 <script>
-    import global  from 'global';
+    import global  from 'common';
     export default {
         data() {
             return {

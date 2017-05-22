@@ -85,6 +85,16 @@
                     }).then(result=>{
                         //处理成功时，刷新数据
                         this.fetchData();
+                    }, err => {
+                        if(err && typeof err ==='object' &&err.statusCode){
+                            if(err.statusCode===1){
+                                this.$message.error(err.message);
+                            }else if(err.statusCode===401){
+                                this.$router.replace({name:'login'});
+                            }
+                        }else{
+                            this.$message.error(err);
+                        }
                     }).catch(err=>{
                         this.$message.error(err);
                     })
@@ -99,8 +109,18 @@
                     return result;
                 }).then(result => {
                     this.applicant = result||[];
+                }, err => {
+                    if(err && typeof err ==='object' &&err.statusCode){
+                        if(err.statusCode===1){
+                            this.$message.error(err.message);
+                        }else if(err.statusCode===401){
+                            this.$router.replace({name:'login'});
+                        }
+                    }else{
+                        this.$message.error(err);
+                    }
                 }).catch(err => {
-                    this.$message.error(err);
+                    console.log(err);
                 })
             },
             filterTag(value, row){

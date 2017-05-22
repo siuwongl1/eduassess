@@ -1,0 +1,81 @@
+<template>
+    <el-card>
+        <el-row>
+            <el-col>
+                姓名：
+            </el-col>
+            <el-col>
+                {{info.name}}
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col>
+                专业：
+            </el-col>
+            <el-col>
+                {{info.pro}}
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col>
+                班级：
+            </el-col>
+            <el-col>
+                {{info.cls}}
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col>
+                性别：
+            </el-col>
+            <el-col>
+                {{info.sex}}
+            </el-col>
+        </el-row>
+        <el-row v-if="this.info.type==='1'">
+            <el-col>
+                学号：
+            </el-col>
+            <el-col>
+                {{info.schooolId}}
+            </el-col>
+        </el-row>
+        <el-row v-else>
+            <el-col>
+                工号：
+            </el-col>
+            <el-col>
+                {{info.schooolId}}
+            </el-col>
+        </el-row>
+    </el-card>
+</template>
+<script>
+    import http from 'http'
+    import co from 'co'
+    export default{
+        data(){
+            return{
+                info:{
+                    name:'',
+                    sex:'',
+                    schooolId:'',
+                    pro:'',
+                    cls:'',
+                    type:'',
+                }
+            }
+        },
+        methods:{
+            fetchData(){
+                var url =`/api/user/${this.$router.params.uid}`;
+            }
+        },
+        created(){
+            this.fetchData();
+        }
+    }
+</script>
+<style>
+
+</style>

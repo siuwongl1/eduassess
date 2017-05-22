@@ -54,6 +54,16 @@
                             var metaData = {uid:store.uid,name:store.name};
                             this.$emit('update',{index:index,metaData:metaData});
                         }
+                    }, err => {
+                        if(err && typeof err ==='object' &&err.statusCode){
+                            if(err.statusCode===1){
+                                this.$message.error(err.message);
+                            }else if(err.statusCode===401){
+                                this.$router.replace({name:'login'});
+                            }
+                        }else{
+                            this.$message.error(err);
+                        }
                     }).catch(err=>{
                         this.$message.error(err);
                     })

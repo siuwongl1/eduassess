@@ -9,10 +9,11 @@
   },
   "dependencies": {
     "amqplib": "^0.5.1",
-    "d3": "^4.8.0",
+    "echarts": "^3.5.4",
     "element-ui": "^1.1.2",
     "stompjs": "^2.3.3",
     "vue": "^2.1.8",
+    "vue-echarts": "^2.3.8",
     "vuex": "^2.2.1"
   },
   "engines": {

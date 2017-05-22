@@ -9,6 +9,7 @@ var HttpUtil = {
             if (url) {
                 var client = new XMLHttpRequest();
                 client.open("GET", url, true);
+                client.withCredentials=true
                 client.onreadystatechange = function () {
                     var that = this;
                     handler(that,resolve,reject);
@@ -25,6 +26,7 @@ var HttpUtil = {
             if (url && data) {
                 var client = new XMLHttpRequest();
                 client.open("POST", url, true);
+                client.withCredentials=true
                 client.onreadystatechange = function () {
                     var that = this;
                     handler(that,resolve,reject);
@@ -41,6 +43,7 @@ var HttpUtil = {
             if (url && data) {
                 var client = new XMLHttpRequest();
                 client.open("PUT", url, true);
+                client.withCredentials=true
                 client.onreadystatechange =function () {
                     var that = this;
                     handler(that,resolve,reject);
@@ -55,16 +58,19 @@ var HttpUtil = {
             if (result) {
                 var obj = JSON.parse(result);
                 var code = obj.statusCode;
-                if (code == 0) {
+                if (code == 0) {  //无错误返回
                     resolve(obj.data); //返回data
                 } else {
-                    reject(obj.message);
+                    reject(obj);
                 }
             } else {
                 reject("服务器无响应");
             }
         });
         return promise;
+    },
+    saveToken(token){
+        document.cookie = `token=${token}`;
     }
 }
 var handler = function (obj,resolve,reject) {
