@@ -119,7 +119,6 @@
                 }
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.loading = true;
                         if(this.formType==='post'){
                             this.postData();
                         }else if(this.formType==='put'){
@@ -134,9 +133,11 @@
                 this.courseForm.period = global.getCurrentPeriod();
             },
             putData(){
+                this.loading = true;
                 var url = `/api/course/${this.$route.params.cid}`;
+                var course= this.course;
                 co(function *() {
-                    var result = yield http.putJson(url,this.course);
+                    var result = yield http.putJson(url,course);
                     return result;
                 }).then((result)=>{
                     this.loading = false;
@@ -158,9 +159,11 @@
                 })
             },
             postData(){
+                this.loading = true;
                 var url = '/api/course';
+                var course= this.course;
                 co(function *() {
-                    var result= yield http.postJson(url,this.course);
+                    var result= yield http.postJson(url,course);
                     return result;
                 }).then((value)=>{
                     this.loading = false;

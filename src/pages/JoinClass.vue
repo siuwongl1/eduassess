@@ -1,5 +1,5 @@
 <template>
-    <div style="padding: 20px">
+    <div style="padding: 20px;back">
         <el-form :model="queryForm" ref="queryForm" :rules="formRules" :inline="true" style="text-align: left;padding: 5px;line-height: 36px;height: 36px" @submit.native.prevent>
             <el-form-item label="专业" prop="pro">
                 <el-input v-model="queryForm.pro" placeholder="请输入专业"></el-input>

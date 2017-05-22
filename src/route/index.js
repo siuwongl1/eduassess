@@ -11,14 +11,15 @@ const router = new VueRouter({
     routes, mode: 'history', base: __dirname
 })
 router.beforeEach((to, from, next) => {
-    if(to.matched.some((record)=>{return record.meta.requiresAuth;})){
-        if(!store.state.user.uid||store.state.user.uid===''){
-            next({path:'/login'})  //未登录或已注销，重定向到login登录页
-        }else{
-            next();
-        }
-    }else{
-        next();
-    }
+    // if(to.matched.some((record)=>{return record.meta.requiresAuth;})){
+    //     if(!store.state.user.uid||store.state.user.uid===''){
+    //         next({path:'/login'})  //未登录或已注销，重定向到login登录页
+    //     }else{
+    //         next();
+    //     }
+    // }else{
+    //     next();
+    // }
+    next();
 })
 export default router;

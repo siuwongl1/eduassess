@@ -24,7 +24,7 @@
                             发布时间：
                         </el-col>
                         <el-col :span="16">
-                            <span>{{l.date}}</span>
+                            <span>{{dateFormat(l.date)}}</span>
                         </el-col>
                     </el-row>
                 </div>
@@ -47,6 +47,10 @@
             showDetal(l){
                 this.$store.commit("storeLesson",{lid:l._id,name:l.name,content:l.content}); //存储当前Lesson状态
                 this.$router.push({name:'lesson',params:{lid:l._id,cid:this.cid}});
+            },
+            dateFormat(val){
+                var date = new Date(val);
+                return date.toLocaleString();
             }
         }
     }
