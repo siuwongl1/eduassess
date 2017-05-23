@@ -154,7 +154,7 @@
                                 schoolId: result.schoolId
                             });
                             this.$store.commit('storeMenuKey',{key:'1'});
-                            this.$router.push({name: 'courseManage'});
+                            this.$router.replace({name: 'courseManage'});
                             this.loading = false;
                         }).catch(err => {
                             this.loading = false;

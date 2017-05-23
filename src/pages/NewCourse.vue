@@ -142,6 +142,12 @@
                 }).then((result)=>{
                     this.loading = false;
                     this.submited =true;
+                    this.$alert('修改成功','提示',{
+                        confirmButtonText:'确定',
+                        callback:(action)=>{
+                            this.$router.go(-1);
+                        }
+                    })
                 }, err => {
                     this.loading = false;
                     if(err && typeof err ==='object' &&err.statusCode){
@@ -168,6 +174,12 @@
                 }).then((value)=>{
                     this.loading = false;
                     this.submited =true;
+                    this.$alert('发布成功','提示',{
+                        confirmButtonText:'确定',
+                        callback:(action)=>{
+                            this.$router.go(-1);
+                        }
+                    })
                 },(err)=>{
                     this.loading = false;
                     if(err && typeof err ==='object' &&err.statusCode){

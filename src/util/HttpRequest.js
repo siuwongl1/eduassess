@@ -70,7 +70,7 @@ var HttpUtil = {
         return promise;
     },
     saveToken(token){
-        document.cookie = `token=${token}`;
+        document.cookie = `token=${token};domain=localhost;path=/`;
     }
 }
 var handler = function (obj,resolve,reject) {

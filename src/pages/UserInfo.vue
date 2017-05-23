@@ -10,8 +10,8 @@
             <el-form-item label="姓名" prop="name">
                 <el-input type="text" v-model="userForm.name"/>
             </el-form-item>
-            <el-form-item label="性别" style="text-align: left">
-                <el-radio-group v-model="userForm.sex" size="small">
+            <el-form-item label="性别" style="text-align: left" >
+                <el-radio-group v-model="sex" size="small">
                     <el-radio :label="1">男</el-radio>
                     <el-radio :label="2">女</el-radio>
                 </el-radio-group>
@@ -72,10 +72,10 @@
                 submited:false,
                 isStudent: this.$store.state.user.type == 1,
                 type: this.$store.state.user.type,// 用户类型
+                sex:1,
                 userForm: {
                     pro: '',  //专业
                     cls: '',  //班级
-                    sex: 1,  //性别
                     name: '', //姓名
                     schoolId: '' // 学号或者工号,
                 },
@@ -112,7 +112,7 @@
                             return result;
                         }).then(result=>{
                             var user = this.userForm;
-                            user.sex = user.sex.toString();
+                            user.sex = this.sex.toString();
                             this.$store.commit('storeUser',user);
                             this.$message('修改成功');
                             this.loading = false;
@@ -135,7 +135,7 @@
                 })
             },
             onReset: function (formName) {
-                this.userForm.sex = 1;
+                this.sex = 1;
                 this.$refs[formName].resetFields();
             },
             fetchData: function () {
@@ -150,7 +150,7 @@
                         this.userForm.pro = user.pro;
                         this.userForm.cls = user.cls;
                         this.userForm.name = user.name;
-                        this.userForm.sex = user.sex == undefined ? 1 : Number.parseInt(user.sex);
+                        this.sex = user.sex == undefined ? 1 : Number.parseInt(user.sex);
                         this.userForm.schoolId = user.schoolId;
                     }
                     this.loading = false;
@@ -170,7 +170,7 @@
                     if(this.isStudent){
                         formData.append('cls', this.userForm.cls);
                     }
-                    formData.append('sex', this.userForm.sex);
+                    formData.append('sex', this.sex);
                     formData.append('pro', this.userForm.pro);
                     formData.append('name', this.userForm.name);
                     formData.append('schoolId', this.userForm.schoolId);

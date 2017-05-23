@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-col style="width: 300px" :span="5" v-for="(c,index) in courses" :offset="index%3==0?0:1">
+        <el-col style="width: 300px" :span="8" v-for="(c,index) in courses" :offset="index%4==0?0:1">
             <el-card  :body-style="{padding:'0px'}">
                 <div class="content">
                     <el-row>
