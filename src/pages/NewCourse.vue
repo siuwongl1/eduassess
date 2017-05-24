@@ -54,11 +54,13 @@
                 loading:false,
                 submited:false,
                 formType:'post',
+                storeUser:this.$store.state.user,
                 courseForm: {
                     name: '',
                     period: '',
                     pro: '',
-                    cls: ''
+                    cls: '',
+                    uid:'',
                 },
                 formRules: {
                     name: [{validator: checkName, trigger: 'blur'}],
@@ -73,6 +75,7 @@
                 this.formType='put';
             }else{
                 this.courseForm.period = global.getCurrentPeriod();
+                this.courseForm.pro = this.$store.state.user.pro;
                 this.formType='post';
             }
         },
@@ -95,6 +98,8 @@
                         this.courseForm.pro=  course.pro;
                         this.courseForm.cls=  course.cls;
                         this.courseForm.period=  course.period;
+                        this.courseForm.tname  =course.tname;
+                        this.courseForm.uid  =course.uid;
                     }
                 },err=>{
                     this.$message.error(err);
@@ -104,7 +109,7 @@
 
             },
             onSubmit(formName){
-                if(this.$store.state.user.name===''){
+                if(this.storeUser.name===''){
                     this.$alert('您的信息还未完善，请完善后再进行课程添加哦','提示',{
                         confirmButtonText:'前往个人信息页面',
                         callback:(action)=>{
@@ -205,8 +210,10 @@
                     formData.append('cls', this.courseForm.cls); //班级名称
                     formData.append('pro', this.courseForm.pro); //专业名称
                     formData.append('period', this.courseForm.period); //学期
-                    formData.append('uid', this.$store.state.user.uid); //教师id
-                    formData.append('tname',this.$store.state.user.name); //教师名称
+                    var uid = this.courseForm.uid|| this.$store.state.user.uid;
+                    formData.append('uid', uid); //教师id
+                    var tname = this.courseForm.tname|| this.$store.state.user.name;
+                    formData.append('tname',tname); //教师名称
                     return formData;
                 }
             }

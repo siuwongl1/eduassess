@@ -16,4 +16,8 @@ export default {
         }
         return result;
     },
+    toLocaleDateString(val){
+        var date = new Date(val);
+        return date.toLocaleString();
+    }
 }

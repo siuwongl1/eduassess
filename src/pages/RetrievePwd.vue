@@ -108,7 +108,7 @@
                             var result = yield http.postJson(url,pw);
                             return result;
                         }).then(result=>{
-                            this.$alert('修改成功，请重新登录', '提示', {
+                            this.$alert('修改成功', '提示', {
                                 confirmButtonText: '确定',
                                 callback: action => {
                                     this.$router.replace({name:'login'});

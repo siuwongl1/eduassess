@@ -3,6 +3,9 @@
              element-loading-text="正在上传数据……">
         <el-form label-width="80px" :model="lessonForm" :label-position="labelPosition" ref="lessonForm"
                  :rules="formRules">
+            <el-form-item prop="cname" label="课程名称">
+                <el-input v-model="lessonForm.cname" :disabled="true"/>
+            </el-form-item>
             <el-form-item prop="name" label="课堂名称">
                 <el-input v-model="lessonForm.name"/>
             </el-form-item>
@@ -42,8 +45,10 @@
                 labelPosition:'right',
                 lessonForm:{
                     name:'',
-                    content:''
+                    content:'',
+                    cname:this.$store.state.course.name,
                 },
+                storeUser:this.$store.state.user,
                 submited:false,
                 formRules:{
                     name:[{validator:checkName,trigger:'blur'}],
@@ -64,36 +69,47 @@
                 }
                 this.$refs[formName].validate((valid)=>{
                     if(valid){
-                        this.loading =true;
-                        var lesson = this.lesson;
-                        var url =`/api/lesson/${this.$route.params.cid}`;
-                        co(function *() {
-                            var result= yield http.postJson(url,lesson);
-                            return result;
-                        }).then(result=>{
-                            this.loading =false;
-                            this.$message('添加成功');
-                        }, err => {
-                            this.loading = false;
-                            if(err && typeof err ==='object' &&err.statusCode){
-                                if(err.statusCode===1){
-                                    this.$message.error(err.message);
-                                }else if(err.statusCode===401){
-                                    this.$router.replace({name:'login'});
+                        if(this.storeUser.name===''){
+                            this.$alert('完善个人信息才可进行操作','提示',{
+                                confirmButtonText:'确定',
+                                callback:(action)=>{
+                                    this.$router.replace({name:'userInfo'});
                                 }
-                            }else{
+                            })
+                        }else{
+                            this.loading =true;
+                            var lesson = this.lesson;
+                            var url =`/api/lesson/${this.$route.params.cid}`;
+                            co(function *() {
+                                var result= yield http.postJson(url,lesson);
+                                return result;
+                            }).then(result=>{
+                                this.loading =false;
+                                this.$message('添加成功');
+                            }, err => {
+                                this.loading = false;
+                                if(err && typeof err ==='object' &&err.statusCode){
+                                    if(err.statusCode===1){
+                                        this.$message.error(err.message);
+                                    }else if(err.statusCode===401){
+                                        this.$router.replace({name:'login'});
+                                    }
+                                }else{
+                                    this.$message.error(err);
+                                }
+                            }).catch(err=>{
+                                this.loading =false;
                                 this.$message.error(err);
-                            }
-                        }).catch(err=>{
-                            this.loading =false;
-                            this.$message.error(err);
-                        })
+                            })
+                        }
                     }
                 })
             },
             onReset(formName){
                 this.$refs[formName].resetFields();
             }
+        },
+        created(){
         },
         computed:{
             lesson:{

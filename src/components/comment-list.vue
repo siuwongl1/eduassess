@@ -29,6 +29,7 @@
             return {
                 isActive:false,
                 toggleSwitch:false,
+                storeUser:this.$store.state.user,
                 comment:{}, //课堂评价列表
                 remarks:[], //评论列表
                 content:'',
@@ -43,30 +44,39 @@
                     this.$message('您已对该评论内容点赞过了哦');
                     return;
                 }else{
-                    var url = `/api/comment/like/${c._id}`;
-                    var user = this.user;
-                    var store =this.$store.state.user;
-                    co(function *() {
-                        var result= yield http.putJson(url,user);
-                        return result;
-                    }).then(result=>{
-                        if(result.n&&result.n==1){
-                            var metaData = {uid:store.uid,name:store.name};
-                            this.$emit('update',{index:index,metaData:metaData});
-                        }
-                    }, err => {
-                        if(err && typeof err ==='object' &&err.statusCode){
-                            if(err.statusCode===1){
-                                this.$message.error(err.message);
-                            }else if(err.statusCode===401){
-                                this.$router.replace({name:'login'});
+                    if(!this.storeUser.name){
+                        this.$alert('完善个人信息才可进行操作','提示',{
+                            confirmButtonText:'确定',
+                            callback:(action)=>{
+                                this.$router.replace({name:'userInfo'});
                             }
-                        }else{
+                        })
+                    }else{
+                        var url = `/api/comment/like/${c._id}`;
+                        var user = this.user;
+                        var store =this.$store.state.user;
+                        co(function *() {
+                            var result= yield http.putJson(url,user);
+                            return result;
+                        }).then(result=>{
+                            if(result.n&&result.n==1){
+                                var metaData = {uid:store.uid,name:store.name};
+                                this.$emit('update',{index:index,metaData:metaData});
+                            }
+                        }, err => {
+                            if(err && typeof err ==='object' &&err.statusCode){
+                                if(err.statusCode===1){
+                                    this.$message.error(err.message);
+                                }else if(err.statusCode===401){
+                                    this.$router.replace({name:'login'});
+                                }
+                            }else{
+                                this.$message.error(err);
+                            }
+                        }).catch(err=>{
                             this.$message.error(err);
-                        }
-                    }).catch(err=>{
-                        this.$message.error(err);
-                    })
+                        })
+                    }
                 }
             },
             isLiked(c){

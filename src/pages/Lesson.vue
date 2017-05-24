@@ -50,6 +50,7 @@
                     name:this.$store.state.lesson.name,
                     content:this.$store.state.lesson.content
                 },
+                storeUser:this.$store.state.user,
                 labelPosition:'right',
                 cid:this.$store.state.course.uid,
                 inputSwitch:false,
@@ -82,27 +83,36 @@
                 })
             },
             postComment(){
-                var url = `/api/comment/${this.lesson.uid}`;
-                var comment = this.comment;
-                co(function *() {
-                    var result=  yield http.postJson(url,comment);
-                    return result;
-                }).then(result=>{
-                    this.$message('评价成功');
-                    this.fetchData();
-                }, err => {
-                    if(err && typeof err ==='object' &&err.statusCode){
-                        if(err.statusCode===1){
-                            this.$message.error(err.message);
-                        }else if(err.statusCode===401){
-                            this.$router.replace({name:'login'});
+                if(!this.storeUser.name){
+                    this.$alert('完善个人信息才可进行操作','提示',{
+                        confirmButtonText:'确定',
+                        callback:(action)=>{
+                            this.$router.replace({name:'userInfo'});
                         }
-                    }else{
-                        this.$message.error(err);
-                    }
-                }).catch(err=>{
-                    console.log(err);
-                })
+                    })
+                }else{
+                    var url = `/api/comment/${this.lesson.uid}`;
+                    var comment = this.comment;
+                    co(function *() {
+                        var result=  yield http.postJson(url,comment);
+                        return result;
+                    }).then(result=>{
+                        this.$message('评价成功');
+                        this.fetchData();
+                    }, err => {
+                        if(err && typeof err ==='object' &&err.statusCode){
+                            if(err.statusCode===1){
+                                this.$message.error(err.message);
+                            }else if(err.statusCode===401){
+                                this.$router.replace({name:'login'});
+                            }
+                        }else{
+                            this.$message.error(err);
+                        }
+                    }).catch(err=>{
+                        console.log(err);
+                    })
+                }
             },
             switchInput(val){
                 this.inputSwitch =val;
@@ -112,7 +122,8 @@
             },
             update(msg){
                 this.fetchData();
-            }
+            },
+
         },
         computed:{
             comment:{

@@ -1,45 +1,45 @@
 <template>
-    <el-row>
-        <el-col style="width: 300px" :span="5" v-for="(l,index) in lessons" :offset="index%3==0?0:1">
-            <el-card :body-style="{padding:'0px'}">
-                <div class="content">
-                    <el-row>
-                        <el-col :span="8" class="label">
-                            课堂名称：
-                        </el-col>
-                        <el-col :span="16">
-                            <span>{{l.name}}</span>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="8" class="label">
-                            课堂内容：
-                        </el-col>
-                        <el-col :span="16">
-                            <span>{{l.content}}</span>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="8" class="label">
-                            发布时间：
-                        </el-col>
-                        <el-col :span="16">
-                            <span>{{dateFormat(l.date)}}</span>
-                        </el-col>
-                    </el-row>
-                </div>
-                <div class="divide-line">
-                    <el-button type="text" class="button" @click="showDetal(l)">详细信息</el-button>
-                </div>
-            </el-card>
-        </el-col>
-    </el-row>
+    <div>
+        <el-table
+                :data="lessons"
+                border
+                style="width: 100%">
+            <el-table-column
+                    label="课堂名称"
+                    width="180">
+                <template scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <p>课堂名称: {{ scope.row.name }}</p>
+                        <p>发布时间: {{ toLocaleDateString(scope.row.date) }}</p>
+                        <div slot="reference" class="name-wrapper">
+                            <el-tag>{{ scope.row.name }}</el-tag>
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="课堂内容">
+                <template scope="scope">
+                    <span style="margin-left: 10px">{{scope.row.content}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column width="180" label="操作">
+                <template scope="scope">
+                    <el-button type="text" class="button" @click="showDetal(scope.row)">详细信息</el-button>
+                    <el-button type="text" class="button" v-if="type==='3'" @click="remove(scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
 </template>
 <script>
+    import common from 'common'
     export default{
         props:['lessons'],
         data(){
             return{
+                type:this.$store.state.user.type,
+                isStudent:this.type==='1',
                 cid:this.$store.state.course.uid
             }
         },
@@ -48,9 +48,14 @@
                 this.$store.commit("storeLesson",{lid:l._id,name:l.name,content:l.content}); //存储当前Lesson状态
                 this.$router.push({name:'lesson',params:{lid:l._id,cid:this.cid}});
             },
-            dateFormat(val){
-                var date = new Date(val);
-                return date.toLocaleString();
+            toLocaleDateString(val){
+                return common.toLocaleDateString(val);
+            },
+            modify(l){
+
+            },
+            remove(l){
+                this.$emit('remove',l);
             }
         }
     }
@@ -61,8 +66,6 @@
         text-align: left;
     }
     .button {
-        padding: 10px;
-        float: right;
     }
     .content {
         text-align: left;

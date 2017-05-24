@@ -53,6 +53,19 @@ var HttpUtil = {
         })
         return promise;
     },
+    deleteJson(url){
+        var promise = new Promise((resolve,reject)=>{
+            var client = new XMLHttpRequest();
+            client.open("DELETE", url, true);
+            client.withCredentials=true
+            client.onreadystatechange =function () {
+                var that = this;
+                handler(that,resolve,reject);
+            };
+            client.send();
+        })
+        return promise;
+    },
     parseResp (result){
         var promise = new Promise((resolve, reject) => {
             if (result) {

@@ -83,9 +83,6 @@
                     }
                 } else if (key === '2-6') { //退出
                     localStorage.clear();//清空本地数据
-                    if(this.stompClient){
-                        this.stompClient.disconnect();
-                    }
                     this.$router.replace({name: 'login'});
                 }
             },

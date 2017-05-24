@@ -5,10 +5,10 @@
             <el-form-item label="学期">
                 <period-input v-on:periodSubmit="periodSubmit"></period-input>
                 <el-button type="primary" @click="queryCourse">查询</el-button>
-                <el-button type="primary" v-if="!isStudent" @click="addCourse">添加课程</el-button>
+                <el-button type="primary" v-if="type==='2'" @click="addCourse">添加课程</el-button>
             </el-form-item>
         </el-form>
-        <course-list :courses="courses" ></course-list>
+        <course-list v-on:removeCourse="delCourse" :courses="courses" ></course-list>
     </div>
 </template>
 <script>
@@ -21,7 +21,8 @@
         data() {
             return {
                 period: global.getCurrentPeriod(),
-                isStudent: this.$store.state.user.type === '1',
+                type:this.$store.state.user.type,
+                isStudent:this.type=== '1',
                 isJoin:true,
                 courses: [],
             }
@@ -35,7 +36,11 @@
         },
         methods: {
             fetchData () {
-                var url = `/api/course/${this.isStudent?'student':'teacher'}/${this.$store.state.user.uid}/period/${this.period}`;
+                if(this.isStudent){
+                    var url = `/api/course/student/${this.$store.state.user.uid}/period/${this.period}`;
+                }else{
+                    var url =`/api/course/period/${this.period}`
+                }
                 co(function *() {
                     var result = yield http.getJson(url);
                     return result;
@@ -63,6 +68,27 @@
             },
             addCourse(){
                 this.$router.push({name: 'newCourse'})
+            },
+            delCourse(course){
+                var url =`/api/course/${course._id}`;
+                co(function *() {
+                    var result = yield http.deleteJson(url);
+                    return result;
+                }).then(result=>{
+                    this.fetchData(); //删除成功，刷新数据
+                },err=>{
+                    if(err && typeof err ==='object' &&err.statusCode){
+                        if(err.statusCode===1){
+                            this.$message.error(err.message);
+                        }else if(err.statusCode===401){
+                            this.$router.replace({name:'login'});
+                        }
+                    }else{
+                        this.$message.error(err);
+                    }
+                }).catch(err=>{
+                    console.log(err);
+                })
             }
         },
         computed: {
