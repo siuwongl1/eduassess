@@ -2,7 +2,7 @@
     <div style="padding:0 20px">
         <el-form :inline="true" class="course-form"
                  @submit.native.prevent>
-            <el-form-item label="学期">
+            <el-form-item label="学期" style="line-height: 36px;height: 36px">
                 <period-input v-on:periodSubmit="periodSubmit"></period-input>
                 <el-button type="primary" @click="queryCourse">查询</el-button>
                 <el-button type="primary" v-if="type==='2'" @click="addCourse">添加课程</el-button>
@@ -21,6 +21,7 @@
         data() {
             return {
                 period: global.getCurrentPeriod(),
+                storeUser:this.$store.state.user,
                 type:this.$store.state.user.type,
                 isStudent:this.type=== '1',
                 isJoin:true,
@@ -36,7 +37,7 @@
         },
         methods: {
             fetchData () {
-                if(this.isStudent){
+                if(this.type==='1'){
                     var url = `/api/course/student/${this.$store.state.user.uid}/period/${this.period}`;
                 }else{
                     var url =`/api/course/period/${this.period}`
@@ -67,6 +68,15 @@
                 this.fetchData();
             },
             addCourse(){
+                if(this.storeUser.name===''){
+                    this.$alert('您的信息还未完善，请完善后再进行课程添加哦','提示',{
+                        confirmButtonText:'前往个人信息页面',
+                        callback:(action)=>{
+                            this.$router.push({name:'userInfo'});
+                        }
+                    })
+                    return ;
+                }
                 this.$router.push({name: 'newCourse'})
             },
             delCourse(course){

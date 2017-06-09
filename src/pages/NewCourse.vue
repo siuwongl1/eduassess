@@ -98,6 +98,7 @@
                         this.courseForm.pro=  course.pro;
                         this.courseForm.cls=  course.cls;
                         this.courseForm.period=  course.period;
+                        console.log("result:",course.tname);
                         this.courseForm.tname  =course.tname;
                         this.courseForm.uid  =course.uid;
                     }

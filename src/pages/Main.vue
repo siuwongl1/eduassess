@@ -18,11 +18,13 @@
             <el-menu-item index="4">统计分析</el-menu-item>
         </el-menu>
         <el-card>
-            当前位置：
-            <el-breadcrumb separator="/">
+            <div style="line-height: 36px;height: 36px"><span style="float: left">当前位置：</span>
+            <el-breadcrumb style="float: left;line-height: 36px;height: 36px;padding: 0 10px" separator="/">
                 <el-breadcrumb-item :to="{name:c.name}" v-for="(c,index) in this.crumbs" replace>{{c.label}}
                 </el-breadcrumb-item>
             </el-breadcrumb>
+            <el-button  type="text" size="mini" @click="back()"> &lt;返回上一页</el-button>
+            </div>
         </el-card>
         <div class="center-content">
             <router-view></router-view>
@@ -49,40 +51,39 @@
             handleSelect(key, keyPath) {
                 this.$store.commit('storeMenuKey', {key: key});
                 if (key === '1') {  //评价课堂或学生首页
-                    this.$router.push({
+                    this.$router.replace({
                         name: 'courseManage'
                     })
                 } else if (key === '2-1') {  //个人信息
-                    this.$router.push({
+                    this.$router.replace({
                         name: 'userInfo'
                     })
                 } else if (key === '2-2') { //修改密码
-                    this.$router.push({
+                    this.$router.replace({
                         name: 'modifyPw'
                     })
                 } else if (key === '3') { //消息
-                    this.$router.push({
+                    this.$router.replace({
                         name: 'notice'
                     })
                 }else if(key==='4'){ //统计分析
-                    this.$router.push({name:'statisic'});
+                    this.$router.replace({name:'statisic'});
                 } else if (key === '2-4') { //我的动态
-                    this.$router.push({name: 'myActivity'})
+                    this.$router.replace({name: 'myActivity'})
                 } else if (key === '2-5') { //加入班级（学生）
                     var user = this.$store.state.user;
-                    var infoComplete = user.name||user.cls||user.pro||user.schoolId||false;
-                    if(!infoComplete){
+                    if(!user.name||!user.cls||!user.pro||!user.schoolId){
                         this.$alert('您的信息未完善，无法进行评价流程，请先去完善您的个人信息', '提示', {
                             confirmButtonText: '确定',
                             callback: action => {
-                                this.$router.push({name: 'userInfo'})
+                                this.$router.replace({name: 'userInfo'})
                             }
                         });
                     }else{
-                        this.$router.push({name: 'joinCourse'})
+                        this.$router.replace({name: 'joinCourse'})
                     }
                 } else if (key === '2-6') { //退出
-                    localStorage.clear();//清空本地数据
+                    sessionStorage.clear();//清空本地数据
                     this.$router.replace({name: 'login'});
                 }
             },
@@ -112,7 +113,7 @@
                 this.$store.commit('storeStompClient',{client:this.stompClient});
                 this.stompClient.connect('guest', 'guest', on_connect, on_error, '/');
             },
-            fetchNotice(){
+            fetchNotice(){  //获取消息信息
                 var store = this.$store.state.user;
                 var url =`/api/notice/${store.uid}`;
                 co(function *() {
@@ -143,8 +144,10 @@
                         this.$message.error(err);
                     }
                 })
+            },
+            back(){
+                this.$router.go(-1);
             }
-
         },
         computed: {
             crumbs: {
@@ -157,7 +160,6 @@
             this.activeIndex = this.$store.state.menu.key || '1';
             this.subscribeMessage();
             this.fetchNotice();
-
         }
     }
 </script>

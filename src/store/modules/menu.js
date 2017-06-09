@@ -2,7 +2,7 @@
  * Created by SiuWongLi on 17/5/6.
  */
 const state={
-    key:sessionStorage.getItem('menuKey'),
+    key:sessionStorage.getItem('menuKey')||'1',
 }
 const mutations={
     storeMenuKey(state,payload){

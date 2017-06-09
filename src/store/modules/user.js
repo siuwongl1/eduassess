@@ -2,18 +2,18 @@
  * Created by SiuWongLi on 17/4/25.
  */
 const state= {
-    uid: sessionStorage.getItem('uid'),
-    username: sessionStorage.getItem('username'),
-    type: sessionStorage.getItem('type'),
-    name: sessionStorage.getItem('name'),
-    cls:sessionStorage.getItem('cls'),
-    pro:sessionStorage.getItem('pro'),
-    schoolId:sessionStorage.getItem('schoolId'),
-    sex:sessionStorage.getItem('sex'),
+    uid: sessionStorage.getItem('uid') || '',
+    username: sessionStorage.getItem('username') ||'',
+    type: sessionStorage.getItem('type') || '',
+    name: sessionStorage.getItem('name') || '',
+    cls:sessionStorage.getItem('cls') || '',
+    pro:sessionStorage.getItem('pro') || '',
+    schoolId:sessionStorage.getItem('schoolId') ||'',
+    sex:sessionStorage.getItem('sex') || '',
 }
 const mutations= {
     storeUser (state, payload) {
-        // 使用localSorage 预防用户刷新浏览器时，用户信息丢失的问题
+        // 使用sessionStorage 预防用户刷新浏览器时，用户信息丢失的问题
         sessionStorage.setItem('uid',payload.uid||state.uid);
         sessionStorage.setItem('type',payload.type||state.type);
         sessionStorage.setItem('username',payload.username||state.username);

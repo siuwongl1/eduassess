@@ -182,11 +182,13 @@
                         }).then(result => {
                             //注册成功,跳转主界面
                             this.loading = false;
+                            http.saveToken(result.token);
                             this.$store.commit('storeUser', {
                                 username: this.registerForm.username,
                                 uid: result.id,
                                 type: this.registerForm.type.toString(),
                             });
+                            this.$store.commit('storeMenuKey',{key:'1'});
                             this.$router.push({name: 'courseManage'});
                         }, err => {
                             this.loading = false;

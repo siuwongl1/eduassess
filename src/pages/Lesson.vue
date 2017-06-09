@@ -11,6 +11,46 @@
         <el-card v-show="inputSwitch">
             <el-form label-width="80px" :model="commentForm" :label-position="labelPosition" ref="commentForm"
                      :rules="formRules">
+                <el-row>
+                    <el-col :span="12">
+                        <div style="display: inline">
+                            备课充分
+                            <el-rate
+                                    v-model="commentForm.ratePrepare"
+                                    show-text>
+                            </el-rate>
+                        </div>
+                    </el-col>
+                    <el-col :span="12">
+                        <div style="display: inline">
+                            课堂交互
+                            <el-rate
+                                    v-model="commentForm.rateInteraction"
+                                    show-text>
+                            </el-rate>
+                        </div>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <div style="display: inline">
+                            内容讲解
+                            <el-rate
+                                    v-model="commentForm.rateContent"
+                                    show-text>
+                            </el-rate>
+                        </div>
+                    </el-col>
+                    <el-col :span="12">
+                        <div style="display: inline">
+                            课后答疑
+                            <el-rate
+                                    v-model="commentForm.rateAnswer"
+                                    show-text>
+                            </el-rate>
+                        </div>
+                    </el-col>
+                </el-row>
                 <el-form-item prop="content" label="评价内容">
                     <el-input
                             type="textarea"
@@ -33,89 +73,93 @@
     import co from 'co'
     import commentComponent from '../components/comment-list.vue'
     export default{
-        components:{
-            'comment-list':commentComponent
+        components: {
+            'comment-list': commentComponent
         },
         data(){
-            var checkComment = (rule,value,cb)=>{
-                if(value===''){
+            var checkComment = (rule, value, cb) => {
+                if (value === '') {
                     cb(new Error('评价内容不能为空'));
-                }else{
+                } else {
                     cb();
                 }
             }
             return {
-                lesson:{
-                    uid:this.$store.state.lesson.uid,
-                    name:this.$store.state.lesson.name,
-                    content:this.$store.state.lesson.content
+                lesson: {
+                    uid: this.$store.state.lesson.uid,
+                    name: this.$store.state.lesson.name,
+                    content: this.$store.state.lesson.content
                 },
-                storeUser:this.$store.state.user,
-                labelPosition:'right',
-                cid:this.$store.state.course.uid,
-                inputSwitch:false,
-                commentForm:{
-                    content:''
+                storeUser: this.$store.state.user,
+                labelPosition: 'right',
+                cid: this.$store.state.course.uid,
+                inputSwitch: false,
+                commentForm: {
+                    ratePrepare: 5,
+                    rateInteraction: 5,
+                    rateContent: 5,
+                    rateAnswer: 5,
+                    content: ''
                 },
-                formRules:{
-                    content:[{validator:checkComment,trigger:'blur'}]
+                formRules: {
+                    content: [{validator: checkComment, trigger: 'blur'}]
                 },
-                comments:[]
+                comments: []
             }
         },
         created(){
             this.fetchData();
         },
-        methods:{
+        methods: {
             fetchData(){
                 var url = `/api/comment/lesson/${this.lesson.uid}`;
                 co(function *() {
                     var result = yield http.getJson(url);
                     return result;
-                }).then(result=>{
-                    if(result&&result.length>0){
+                }).then(result => {
+                    if (result && result.length > 0) {
                         this.comments = result;
                     }
-                },err=>{
+                }, err => {
                     this.$message.error(err);
-                }).catch(err=>{
+                }).catch(err => {
                     this.$message.error(err);
                 })
             },
             postComment(){
-                if(!this.storeUser.name){
-                    this.$alert('完善个人信息才可进行操作','提示',{
-                        confirmButtonText:'确定',
-                        callback:(action)=>{
-                            this.$router.replace({name:'userInfo'});
+                if (!this.storeUser.name) {
+                    this.$alert('完善个人信息才可进行操作', '提示', {
+                        confirmButtonText: '确定',
+                        callback: (action) => {
+                            this.$router.replace({name: 'userInfo'});
                         }
                     })
-                }else{
+                } else {
                     var url = `/api/comment/${this.lesson.uid}`;
                     var comment = this.comment;
                     co(function *() {
-                        var result=  yield http.postJson(url,comment);
+                        var result = yield http.postJson(url, comment);
                         return result;
-                    }).then(result=>{
+                    }).then(result => {
                         this.$message('评价成功');
                         this.fetchData();
                     }, err => {
-                        if(err && typeof err ==='object' &&err.statusCode){
-                            if(err.statusCode===1){
+                        if (err && typeof err === 'object' && err.statusCode) {
+                            if (err.statusCode === 1) {
                                 this.$message.error(err.message);
-                            }else if(err.statusCode===401){
-                                this.$router.replace({name:'login'});
+                            } else if (err.statusCode === 401) {
+                                this.$router.replace({name: 'login'});
                             }
-                        }else{
+                        } else {
                             this.$message.error(err);
                         }
-                    }).catch(err=>{
+                    }).catch(err => {
                         console.log(err);
                     })
                 }
             },
             switchInput(val){
-                this.inputSwitch =val;
+                this.inputSwitch = val;
             },
             onReset(formName){
                 this.$refs[formName].resetFields();
@@ -125,14 +169,18 @@
             },
 
         },
-        computed:{
-            comment:{
+        computed: {
+            comment: {
                 get(){
                     var formData = new FormData();
-                    formData.append('content',this.commentForm.content); //评价内容
-                    formData.append('name',this.$store.state.user.name); //用户名称
-                    formData.append('uid',this.$store.state.user.uid); //用户id
-                    formData.append('cid',this.$store.state.course.uid); //课程id
+                    formData.append('content', this.commentForm.content); //评价内容
+                    formData.append('name', this.$store.state.user.name); //用户名称
+                    formData.append('uid', this.$store.state.user.uid); //用户id
+                    formData.append('cid', this.$store.state.course.uid); //课程id
+                    formData.append('rateContent',this.commentForm.rateContent);//内容评分
+                    formData.append('rateAnswer',this.commentForm.rateAnswer);//课堂讲解评分
+                    formData.append('rateInteraction',this.commentForm.rateInteraction);//课堂交互评分
+                    formData.append('ratePrepare',this.commentForm.ratePrepare);//课堂准备
                     return formData;
                 }
             }

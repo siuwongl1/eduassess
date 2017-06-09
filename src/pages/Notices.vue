@@ -6,15 +6,15 @@
             <div v-else>
                 <div class="feed-item" v-for="(n,index) in notices">
                     <div v-if="n.type==='remark'">
-                        <div style="padding: 5px 0">
-                            <span style="float: left">{{n.name}}回复了您的评价信息</span>
-                            <span style="float: right">{{toDateString(n.date)}}</span>
+                        <div class="notice-item">
+                            <span class="notice-item-left-cell">{{n.name}}回复了您的评价信息</span>
+                            <span class="notice-item-right-cell">{{toDateString(n.date)}}</span>
                         </div>
                     </div>
                     <div v-else-if="n.type==='like'">
-                        <div style="padding: 5px 0">
-                            <span style="float: left">{{n.name}}赞同了您的评价</span>
-                            <span style="float: right">{{toDateString(n.date)}}</span>
+                        <div class="notice-item">
+                            <span class="notice-item-left-cell">{{n.name}}赞同了您的评价</span>
+                            <span class="notice-item-right-cell">{{toDateString(n.date)}}</span>
                         </div>
                     </div>
                     <div style="clear: both"></div>
@@ -25,7 +25,7 @@
 </template>
 <script>
     import http from 'http';
-    import co from 'co'
+    import co from 'co';
     export default{
         data(){
             return{
@@ -36,6 +36,13 @@
             toDateString(val){
                 var date = new Date(val);
                 return date.toLocaleString();
+            },
+            jumpDetail(notice){
+                if(notice.type==='like'){  //点赞相关
+
+                }else if(notice.type==='remark'){  //评论相关
+
+                }
             }
         },
         created(){
@@ -43,3 +50,14 @@
         }
     }
 </script>
+<style>
+    .notice-item{
+        padding: 5px 0;
+    }
+    .notice-item .notice-item-left-cell{
+        float: left;
+    }
+    .notice-item .notice-item-right-cell{
+        float: right;
+    }
+</style>

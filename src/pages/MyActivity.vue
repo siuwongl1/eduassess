@@ -55,6 +55,7 @@
                     if(result){
                         this.pagertotal = result.count;
                         this.activities = result.data;
+                        console.log(this.activities);
                     }
                 }, err => {
                     if(err && typeof err ==='object' &&err.statusCode){

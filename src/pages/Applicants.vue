@@ -6,7 +6,7 @@
                 border
                 fix
                 tooltip-effect="dark"
-                style="width: 845px;margin: 0 auto"
+                style="width:995px;margin: 0 auto"
                 @selection-change="handleSelectionChange">
             <el-table-column
                 type="selection"
@@ -31,6 +31,11 @@
                 prop="pro"
                 label="专业"
                 width="250">
+            </el-table-column>
+            <el-table-column
+                prop="cls"
+                label="班级"
+                width="150">
             </el-table-column>
             <el-table-column
                     prop="type"

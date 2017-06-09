@@ -45,7 +45,7 @@
         },
         methods:{
             showDetal(l){
-                this.$store.commit("storeLesson",{lid:l._id,name:l.name,content:l.content}); //存储当前Lesson状态
+                this.$store.commit("storeLesson",{lid:l._id,lname:l.name,content:l.content}); //存储当前Lesson状态
                 this.$router.push({name:'lesson',params:{lid:l._id,cid:this.cid}});
             },
             toLocaleDateString(val){
