@@ -83,7 +83,15 @@ var HttpUtil = {
         return promise;
     },
     saveToken(token){
-        document.cookie = `token=${token};domain=localhost;path=/`;
+        var promise = new Promise((resolve,reject)=>{
+            if(token){
+                document.cookie = `token=${token};domain=${location.hostname};path=/`;
+                resolve();
+            }else{
+                reject('token must not null');
+            }
+        })
+        return promise;
     }
 }
 var handler = function (obj,resolve,reject) {

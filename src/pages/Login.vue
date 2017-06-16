@@ -139,9 +139,11 @@
                         this.loading = true;
                         co(function *() {
                             var result = yield http.postJson('/api/user/login', user);
+                            if(result.token){
+                                yield http.saveToken(result.token);
+                            }
                             return result;
                         }).then(result => {
-                            http.saveToken(result.token);
                             //登录成功时，路由到主界面，传递相关参数：用户名，用户uid，用户类型等状态信息
                             this.$store.commit('storeUser', {
                                 username: result.username,
@@ -171,18 +173,20 @@
                     }
                 })
             },
-            register: function (formName) {
+            register (formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.loading = true;
                         var user = this.user;
                         co(function *() {
                             var result = yield http.postJson('/api/user', user);
+                            if(result.token){
+                                yield http.saveToken(result.token);
+                            }
                             return result;
                         }).then(result => {
                             //注册成功,跳转主界面
                             this.loading = false;
-                            http.saveToken(result.token);
                             this.$store.commit('storeUser', {
                                 username: this.registerForm.username,
                                 uid: result.id,
