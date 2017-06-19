@@ -152,7 +152,7 @@ export default [{
         },
         {
             name:'index',
-            path: '/index', // 主界面
+            path: '/ets', // 主界面
             meta: { requiresAuth: true },
             component: Main,
             children:[
